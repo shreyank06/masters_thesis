@@ -1,0 +1,12 @@
+{
+    "PROMETHEUS_URL": "http://192.168.254.130:9090/prom/api/v1/query_range",
+    "queries": {
+        "http": ["http_client_request_count"],
+        "cpu": ["namedprocess_namegroup_cpu_seconds_total"],
+        "allocated": ["phoenix_memory_cm_allocated_bytes"],
+        "wasted": ["phoenix_memory_cm_wasted_bytes"]
+    },
+    "start_time": "2023-12-26T10:00:00",
+    "step": "1s",
+    "component": "amf"
+}

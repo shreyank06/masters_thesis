@@ -4,7 +4,8 @@
         "http": ["http_client_request_count"],
         "cpu": ["namedprocess_namegroup_cpu_seconds_total"],
         "allocated": ["phoenix_memory_cm_allocated_bytes"],
-        "wasted": ["phoenix_memory_cm_wasted_bytes"]
+        "wasted": ["phoenix_memory_cm_wasted_bytes"],
+        "subscriber_count": ["open5G_bt_subscriber_count"]
     },
     "start_time": "2023-12-26T10:00:00",
     "step": "1s",

@@ -13,6 +13,7 @@ config['start_time'] = datetime.fromisoformat(config['start_time'])
 
 def fetch_prometheus_data(query_type, start, end, step):
     query = config['queries'][query_type][0]
+    print(query)
     params = {
         'query': query,
         'start': start.isoformat() + 'Z',
@@ -50,6 +51,16 @@ def convert_to_dataframe(data, column_prefix='', suffix=''):
                     merged_df = pd.merge(merged_df, df, how='outer', left_index=True, right_index=True)
                 else:
                     merged_df = df
+            if ('open5G_bt_subscriber_count' in str(data)):  
+                subscriber_state = metric["metric"].get("subscriber_state", "unknown") 
+                column_name = f'subscriber_count_{subscriber_state}'
+                df = pd.DataFrame(metric["values"], columns=['timestamp', column_name])
+                df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
+                df.set_index('timestamp', inplace=True)
+                if not merged_df.empty:
+                    merged_df = pd.merge(merged_df, df, how='outer', left_index=True, right_index=True)
+                else:
+                    merged_df = df
     return merged_df
 
 def merge_dataframes(dataframes):
@@ -68,26 +79,24 @@ def fetch_and_convert_data(query_type, start_time, end_time, step, column_prefix
 while True:
     end_time = config['start_time'] + timedelta(seconds=60)
 
-    # Fetch and convert HTTP data
+    # Fetch and convert all data
     http_df = fetch_and_convert_data('http', config['start_time'], end_time, config['step'], column_prefix='http_client_request_count')
-    
-    # Fetch and convert CPU data
     cpu_df = fetch_and_convert_data('cpu', config['start_time'], end_time, config['step'], column_prefix='cpu')
-
-    #Fetch and convert memory data
     allocated_df = fetch_and_convert_data('allocated', config['start_time'], end_time, config['step'], column_prefix='allocated', suffix='allocated_amf').apply(pd.to_numeric, errors='coerce')
     wasted_df = fetch_and_convert_data('wasted', config['start_time'], end_time, config['step'], column_prefix='wasted', suffix='wasted_amf').apply(pd.to_numeric, errors='coerce')
+    subscriber_count_df = fetch_and_convert_data('subscriber_count', config['start_time'], end_time, config['step'], column_prefix='subscriber_count')
 
     column_types = ['global', 'packet', 'session', 'transaction']
-    result_df = wasted_df.copy()
+    result_df = pd.DataFrame()  # Create an empty DataFrame to store the results
     
     for column_type in column_types:
         allocated_col = f'phoenix_memory_cm_{column_type}P_allocated_amf'
         wasted_col = f'phoenix_memory_cm_{column_type}P_wasted_amf'
         result_df[f'phoenix_memory_{column_type}_used_amf'] = allocated_df[allocated_col] - wasted_df[wasted_col]
 
-    # # Merge HTTP, CPU, Allocated, and Wasted DataFrames
-    merged_df = merge_dataframes([http_df, cpu_df, result_df])
+    result_df = result_df.filter(like='_used_amf')
+    # Merge HTTP, CPU, Allocated, and Wasted DataFrames
+    merged_df = merge_dataframes([http_df, cpu_df, subscriber_count_df, result_df])
     merged_df.to_csv("merged_http_cpu_mem_data_2.csv", index=True, mode='a', header=not os.path.exists("merged_http_cpu_mem_data_2.csv"))
 
     config['start_time'] = end_time

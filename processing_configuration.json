@@ -7,7 +7,7 @@
         "wasted": ["phoenix_memory_cm_wasted_bytes"],
         "subscriber_count": ["open5G_bt_subscriber_count"]
     },
-    "start_time": "2023-12-26T10:00:00",
+    "start_time": "2024-01-08T10:14:00",
     "step": "1s",
     "component": "amf"
 }

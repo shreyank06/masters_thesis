@@ -56,7 +56,6 @@ def main():
             retrain_model(trainX, trainY, testX, testY).save("saved_model.h5")
         try:
             prediction = load_model("saved_model.h5").predict(testX)
-            # Rest of your code for processing predictions
         except Exception as e:
             print(f"Error during prediction: {e}")
             

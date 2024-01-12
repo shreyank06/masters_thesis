@@ -9,7 +9,6 @@ from keras.wrappers.scikit_learn import KerasRegressor
 from sklearn.model_selection import GridSearchCV
 import numpy as np
 from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import LSTM, Dense, Dropout
 from sklearn.preprocessing import MinMaxScaler
 
 def main():
@@ -40,9 +39,9 @@ def main():
 
         # Merge HTTP, CPU, Allocated, Wasted, and subscriber dataframes
         merged_df = merge_dataframes([http_df, cpu_df, subscriber_count_df, result_df])#.dropna()
-        timestamps = merged_df.index
-        scaled_df = pd.DataFrame(scaler.fit_transform(merged_df), columns=merged_df.columns, index=timestamps)
-        merged_df.to_csv(csv_file, index=True, header=True if not os.path.exists(csv_file) else False, mode='a' if os.path.exists(csv_file) else 'w')
+        scaled_df = pd.DataFrame(scaler.fit_transform(merged_df), columns=merged_df.columns, index=merged_df.index)
+        #merged_df.to_csv(csv_file, index=True, header=True if not os.path.exists(csv_file) else False, mode='a' if os.path.exists(csv_file) else 'w')
+        
         # Calculate the split index
         split_index = int(len(merged_df) * train_percentage)
 
@@ -50,10 +49,11 @@ def main():
         train_data, test_data = scaled_df.iloc[:split_index], scaled_df.iloc[split_index:]
         trainX, trainY, testX, testY = createXY(train_data, 5) + createXY(test_data, 5)
         
-        print(f"Predicting for time range: {config['start_time']} to {end_time}")
+        print(f"Predicti for time range: {config['start_time']} to {end_time}")
 
         if(config["retrain_model"]):
-            retrain_model(trainX, trainY, testX, testY).save("saved_model.h5")
+            retrain_model(scaled_df, split_index).save("saved_model.h5")
+
         try:
             prediction = load_model("saved_model.h5").predict(testX)
             # Rest of your code for processing predictions

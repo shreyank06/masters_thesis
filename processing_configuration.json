@@ -1,14 +1,18 @@
 {
     "PROMETHEUS_URL": "http://192.168.254.130:9090/prom/api/v1/query_range",
-    "queries": {
-        "http": ["http_client_request_count"],
-        "cpu": ["namedprocess_namegroup_cpu_seconds_total"],
-        "allocated": ["phoenix_memory_cm_allocated_bytes"],
-        "wasted": ["phoenix_memory_cm_wasted_bytes"],
-        "subscriber_count": ["open5G_bt_subscriber_count"]
-    },
+    "queries_1": [
+        "http_client_request_count",
+        "namedprocess_namegroup_cpu_seconds_total",
+        "phoenix_memory_cm_allocated_bytes",
+        "phoenix_memory_cm_wasted_bytes",
+        "open5G_bt_subscriber_count"
+    ],
+    "queries": ["http_client_request_count", "namedprocess_namegroup_cpu_seconds_total", "phoenix_memory_cm_allocated_bytes"],
+    "column_prefix": ["http", "cpu"],
     "start_time": "2024-01-11T08:30:00",
+    "end_time": "2024-01-11T08:31:00",
     "step": "1s",
     "component": "amf",
     "retrain_model":false
 }
+

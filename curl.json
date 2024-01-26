@@ -1,0 +1,1 @@
+curl -g 'http://192.168.254.130:9090/prom/api/v1/query_range?query=({__name__=~"http_client_request_count|phoenix_memory_cm_allocated_bytes"})&start=2024-01-11T08:30:00Z&end=2024-01-11T08:31:00Z&step=1s' | jq '.' > output.json

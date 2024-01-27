@@ -1,17 +1,7 @@
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
-from sklearn.preprocessing import MinMaxScaler
 from keras.wrappers.scikit_learn import KerasRegressor
 from sklearn.model_selection import GridSearchCV
-import numpy as np
-
-def createXY(dataset, n_past):
-    dataX = []
-    dataY = []
-    for i in range(n_past, len(dataset)):
-        dataX.append(dataset.iloc[i - n_past:i, 0:].values)
-        dataY.append(dataset.iloc[i, 3])
-    return np.array(dataX), np.array(dataY)
 
 def build_model(optimizer):
     grid_model = Sequential()

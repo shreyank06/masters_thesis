@@ -1,4 +1,4 @@
-from parse_json import load_configuration, fetch_and_convert_data
+from parse_json import fetch_and_convert_data
 import time
 from datetime import datetime, timedelta
 import os

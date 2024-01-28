@@ -17,9 +17,11 @@ def main():
 
     # Example usage:
     df = pd.read_csv("scaled_merged_http_cpu_mem_data.csv")  # Load your DataFrame here
-    print(df.apply(pd.to_numeric, errors='coerce'))
-    # predictor = Predictor(df.apply(pd.to_numeric, errors='coerce'), config)
-    # predictor.predict_on_test_data()  # Example usage of predict_on_test_data method
+    df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
+    #print(df)
+
+    predictor = Predictor(df.apply(pd.to_numeric, errors='coerce'), config)
+    predictor.predict_on_test_data()  # Example usage of predict_on_test_data method
 
 if __name__ == "__main__":
     main()

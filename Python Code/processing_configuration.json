@@ -12,7 +12,7 @@
     "end_time": "2024-01-18T12:50:00",
     "step": "1s",
     "component": "amf",
-    "retrain_model":true,
+    "retrain_model":false,
     "get_csv": false
 }
 

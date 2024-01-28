@@ -39,12 +39,17 @@ class Predictor:
             prediction = load_model("saved_model.h5").predict(self.testX)
         except Exception as e:
             print(f"Error during prediction: {e}")
-        
-        subscriber_count_predicted_value = self.scaler.inverse_transform(np.reshape(np.repeat(prediction, 11, axis=-1), (len(prediction), 11)))[:, 3]
+
+        # print("Shapes before inverse transform:")
+        # print("Prediction shape:", prediction.shape)
+        # print("Repeated prediction shape:", np.repeat(prediction, 13, axis=-1).shape)
+        # print("Reshaped prediction shape:", np.reshape(np.repeat(prediction, 13, axis=-1), (len(prediction), 13)).shape)
+
+        subscriber_count_predicted_value = self.scaler.inverse_transform(np.reshape(np.repeat(prediction, 13, axis=-1), (len(prediction), 13)))[:, 5]
 
         print("Predicted subscriber count -- ", subscriber_count_predicted_value)
 
-        original = self.scaler.inverse_transform(np.reshape(np.repeat(self.testY, 11, axis=-1), (len(self.testY), 11)))[:, 3]
+        original = self.scaler.inverse_transform(np.reshape(np.repeat(self.testY, 13, axis=-1), (len(self.testY), 13)))[:, 5]
         print("\nOriginal Values -- ", original)
 
 

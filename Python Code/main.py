@@ -6,7 +6,7 @@ from split_and_predict import Predictor
 
 def main():
     
-    with open("processing_configuration.json", "r") as config_file:
+    with open("../processing_configuration.json", "r") as config_file:
         config = json.load(config_file)
 
     config['start_time'] = datetime.fromisoformat(config['start_time'])
@@ -16,7 +16,7 @@ def main():
         collect_csv_data(config['start_time'], config['end_time'], config)
 
     # Example usage:
-    df = pd.read_csv("scaled_merged_http_cpu_mem_data.csv")  # Load your DataFrame here
+    df = pd.read_csv("../scaled_merged_http_cpu_mem_data.csv")  # Load your DataFrame here
     df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
     #print(df)
 

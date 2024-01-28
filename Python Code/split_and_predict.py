@@ -33,10 +33,10 @@ class Predictor:
         self.split_train_test_data(0.8)
 
         if self.config["retrain_model"]:
-            retrain_model(self.trainX, self.trainY, self.testX, self.testY).save("saved_model.h5")
+            retrain_model(self.trainX, self.trainY, self.testX, self.testY).save("../saved_model.h5")
 
         try:
-            prediction = load_model("saved_model.h5").predict(self.testX)
+            prediction = load_model("../saved_model.h5").predict(self.testX)
         except Exception as e:
             print(f"Error during prediction: {e}")
 

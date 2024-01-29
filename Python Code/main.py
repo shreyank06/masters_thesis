@@ -1,4 +1,4 @@
-from collect_data_2 import CsvCollector
+from collect_data import CsvCollector
 import json
 from datetime import datetime
 import pandas as pd
@@ -15,7 +15,7 @@ def main():
     if(config['get_csv']):
         collector = CsvCollector(config['start_time'], config['end_time'], config)
         collector.collect_csv_data()
-        
+
     # # Example usage:
     # df = pd.read_csv("../scaled_merged_http_cpu_mem_data.csv")  # Load your DataFrame here
     # df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')

@@ -5,7 +5,7 @@ from sklearn.model_selection import GridSearchCV
 
 def build_model(optimizer):
     grid_model = Sequential()
-    grid_model.add(LSTM(50,return_sequences=True,input_shape=(5, 13)))
+    grid_model.add(LSTM(50,return_sequences=True,input_shape=(5, 14)))
     grid_model.add(LSTM(50))
     grid_model.add(Dropout(0.2))
     grid_model.add(Dense(1))

@@ -42,14 +42,14 @@ class Predictor:
 
         # print("Shapes before inverse transform:")
         # print("Prediction shape:", prediction.shape)
-        # print("Repeated prediction shape:", np.repeat(prediction, 13, axis=-1).shape)
-        # print("Reshaped prediction shape:", np.reshape(np.repeat(prediction, 13, axis=-1), (len(prediction), 13)).shape)
+        # print("Repeated prediction shape:", np.repeat(prediction, 14, axis=-1).shape)
+        # print("Reshaped prediction shape:", np.reshape(np.repeat(prediction, 14, axis=-1), (len(prediction), 14)).shape)
 
-        subscriber_count_predicted_value = self.scaler.inverse_transform(np.reshape(np.repeat(prediction, 13, axis=-1), (len(prediction), 13)))[:, 5]
+        subscriber_count_predicted_value = self.scaler.inverse_transform(np.reshape(np.repeat(prediction, 14, axis=-1), (len(prediction), 14)))[:, 5]
 
         print("Predicted subscriber count -- ", subscriber_count_predicted_value)
 
-        original = self.scaler.inverse_transform(np.reshape(np.repeat(self.testY, 13, axis=-1), (len(self.testY), 13)))[:, 5]
+        original = self.scaler.inverse_transform(np.reshape(np.repeat(self.testY, 14, axis=-1), (len(self.testY), 14)))[:, 5]
         print("\nOriginal Values -- ", original)
 
 

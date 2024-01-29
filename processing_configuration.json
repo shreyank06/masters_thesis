@@ -8,11 +8,11 @@
         "phoenix_memory_cm_wasted_bytes",
         "open5G_bt_subscriber_count"
     ],
-    "start_time": "2024-01-18T12:40:00",
-    "end_time": "2024-01-18T12:50:00",
+    "start_time": "2024-01-29T07:34:04",
+    "end_time": "2024-01-29T07:36:00",
     "step": "1s",
     "component": "amf",
     "retrain_model":false,
-    "get_csv": false
+    "get_csv": true
 }
 

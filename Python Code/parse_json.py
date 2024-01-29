@@ -1,5 +1,6 @@
 import requests
 import pandas as pd
+import csv
 
 def fetch_prometheus_data(config, start, end, step):
     queries = '|'.join(config['queries'])
@@ -30,6 +31,44 @@ def filtered_json(config, data):
         elif job == "process" and config['component'] in result["metric"].get("groupname", ""):
             filtered_results.append(result)
     return filtered_results
+
+import csv
+
+def convert_to_csv(config, data, output_file):
+    header_written = False
+    
+    with open(output_file, 'w', newline='') as csvfile:
+        csv_writer = csv.writer(csvfile)
+        
+        for metric in filtered_json(config, data):
+            job = metric['metric'].get('job', 'unknown')
+            component = config['component']
+            if job == 'phoenix':
+                if 'http' in str(metric):
+                    metric_name = metric["metric"].get("__name__", "unknown")
+                    column_name = f'{metric_name}_{component}'
+                if 'allocated' in str(metric):
+                    memtype = metric["metric"].get("memtype", "unknown")
+                    column_name = f'phoenix_memory_allocated_{memtype}_{component}'
+                if 'wasted' in str(metric):
+                    memtype = metric["metric"].get("memtype", "unknown")
+                    column_name = f'phoenix_memory_wasted_{memtype}_{component}'
+                if 'open5G_bt_subscriber_count' in str(metric):  
+                    subscriber_state = metric["metric"].get("subscriber_state", "unknown") 
+                    column_name = f'subscriber_count_{subscriber_state}'
+            if job == 'process':
+                if 'cpu' in str(metric):
+                    mode = metric["metric"].get("mode", "unknown")
+                    column_name = f'cpu_{component}_{mode}'
+                    
+            values = [(entry['timestamp'], entry['value']) for entry in metric["values"]]
+            
+            if not header_written:
+                csv_writer.writerow(['timestamp', column_name])
+                header_written = True
+                
+            csv_writer.writerows(values)
+    print(values)
 
 def convert_to_dataframe(config, data):
 

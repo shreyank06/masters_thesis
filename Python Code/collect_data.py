@@ -41,7 +41,7 @@ class CsvCollector:
                         new_series = 0
                     file_suffix = f"_s{new_series}"
                     component_folder = self.config['component'] + '_csv_files'
-                    csv_file_path = os.path.join(component_folder, f"{len(df)}_{differences[0]}_{0}_{file_suffix}_{self.config['component']}.csv")
+                    csv_file_path = os.path.join(component_folder, f"{len(df)}_{differences[0]}_{0}{file_suffix}_{self.config['component']}.csv")
                     os.makedirs(os.path.dirname(csv_file_path), exist_ok=True)
             df.to_csv(csv_file_path, index=True, header=True if not os.path.exists(csv_file_path) else False, mode='a' if os.path.exists(csv_file_path) else 'w')
 

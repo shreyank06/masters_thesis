@@ -26,13 +26,15 @@ class CsvCollector:
     def collect_csv_data(self):
         while True:
             df = fetch_and_convert_data(self.config, 'queries', self.start_time, self.end_time, self.config['step'])
-            
+            latest_subscriber_count = df['subscriber_count_Connected'].iloc[-1]
+            #print(latest_subscriber_count)
             # Check if the dataframe has at least 5 rows and the connected column exists
-            if len(df) >= 10 and self.connected_col_name in df.columns:
-                first_ten_values = df[self.connected_col_name].head(10).tolist()
+            if len(df) >= 5 and self.connected_col_name in df.columns:
+                first_five_values = df[self.connected_col_name].head(10).tolist()
                 # Calculate differences between consecutive values
-                differences = [first_ten_values[i+1] - first_ten_values[i] for i in range(len(first_ten_values)-1)]
-                if all(first_ten_values[i] <= first_ten_values[i+1] for i in range(len(first_ten_values)-1)):
+                differences = [first_five_values[i+1] - first_five_values[i] for i in range(len(first_five_values)-1)]
+                print(differences)
+                if all(first_five_values[i] <= first_five_values[i+1] for i in range(len(first_five_values)-1)):
                     # Values are increasing, adjust filename
                     existing_series_numbers = self.get_existing_series()
                     if existing_series_numbers:
@@ -41,9 +43,9 @@ class CsvCollector:
                         new_series = 0
                     file_suffix = f"_s{new_series}"
                     component_folder = self.config['component'] + '_csv_files'
-                    csv_file_path = os.path.join(component_folder, f"{len(df)}_{differences[0]}_{0}{file_suffix}_{self.config['component']}.csv")
+                    csv_file_path = os.path.join(component_folder, f"{latest_subscriber_count}_{differences[0]}_{0}{file_suffix}_{self.config['component']}.csv")
                     os.makedirs(os.path.dirname(csv_file_path), exist_ok=True)
-            df.to_csv(csv_file_path, index=True, header=True if not os.path.exists(csv_file_path) else False, mode='a' if os.path.exists(csv_file_path) else 'w')
+                    df.to_csv(csv_file_path, index=True, header=True if not os.path.exists(csv_file_path) else False, mode='a' if os.path.exists(csv_file_path) else 'w')
 
             sys.exit()
             self.start_time = self.end_time

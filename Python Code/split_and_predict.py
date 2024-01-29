@@ -19,7 +19,7 @@ class Predictor:
         dataY = []
         for i in range(n_past, len(dataset)):
             dataX.append(dataset.iloc[i - n_past:i, 0:].values)
-            dataY.append(dataset.iloc[i, 3])
+            dataY.append(dataset.iloc[i, 5])
         return np.array(dataX), np.array(dataY)
 
     def split_train_test_data(self, train_percentage):
@@ -45,11 +45,11 @@ class Predictor:
         # print("Repeated prediction shape:", np.repeat(prediction, 14, axis=-1).shape)
         # print("Reshaped prediction shape:", np.reshape(np.repeat(prediction, 14, axis=-1), (len(prediction), 14)).shape)
 
-        subscriber_count_predicted_value = self.scaler.inverse_transform(np.reshape(np.repeat(prediction, 14, axis=-1), (len(prediction), 14)))[:, 5]
+        subscriber_count_predicted_value = self.scaler.inverse_transform(np.reshape(np.repeat(prediction, 14, axis=-1), (len(prediction), 14)))[:, 6]
 
         print("Predicted subscriber count -- ", subscriber_count_predicted_value)
 
-        original = self.scaler.inverse_transform(np.reshape(np.repeat(self.testY, 14, axis=-1), (len(self.testY), 14)))[:, 5]
+        original = self.scaler.inverse_transform(np.reshape(np.repeat(self.testY, 14, axis=-1), (len(self.testY), 14)))[:, 6]
         print("\nOriginal Values -- ", original)
 
 

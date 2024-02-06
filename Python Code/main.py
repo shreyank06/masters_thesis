@@ -9,12 +9,12 @@ def main():
     with open("../processing_configuration.json", "r") as config_file:
         config = json.load(config_file)
 
-    if(config['get_csv']):
-        config['start_time'] = datetime.fromisoformat(config['start_time'])
-        config['end_time'] = datetime.fromisoformat(config['end_time'])
+    # if(config['get_csv']):
+    #     config['start_time'] = datetime.fromisoformat(config['start_time'])
+    #     config['end_time'] = datetime.fromisoformat(config['end_time'])
 
-        collector = CsvCollector(config['start_time'], config['end_time'], config)
-        collector.collect_csv_data()
+    #     collector = CsvCollector(config['start_time'], config['end_time'], config)
+    #     collector.collect_csv_data()
 
     df = pd.read_csv("amf_csv_files/1001_1_0_s0_amf.csv")  # Load your DataFrame here
     df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
@@ -25,3 +25,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

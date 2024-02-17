@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 import csv
+import sys
 
 def fetch_prometheus_data(config, start, end, step):
     queries = '|'.join(config['queries'])
@@ -14,6 +15,7 @@ def fetch_prometheus_data(config, start, end, step):
 
     url = config['PROMETHEUS_URL']
     response = requests.get(url, params=params)
+
     if response.status_code == 200:
         return response.json()
     else:

@@ -6,11 +6,13 @@ import sys
 import re
 
 class CsvCollector:
-    def __init__(self, start_time, end_time, config):
+    def __init__(self, start_time, end_time, config, registration_number, ops_per_second):
         self.start_time = start_time
         self.end_time = end_time
         self.config = config
         self.connected_col_name = "subscriber_count_Connected"
+        self.registration_number = registration_number
+        self.ops_per_second = ops_per_second
 
     def get_existing_series(self):
         # Get series numbers from existing CSV filenames
@@ -43,10 +45,10 @@ class CsvCollector:
                         new_series = 0
                     file_suffix = f"_s{new_series}"
                     component_folder = self.config['component'] + '_csv_files'
-                    csv_file_path = os.path.join(component_folder, f"{latest_subscriber_count}_{differences[0]}_{0}{file_suffix}_{self.config['component']}.csv")
+                    csv_file_path = os.path.join(component_folder, f"{self.registration_number}_{self.ops_per_second}_{0}{file_suffix}_{self.config['component']}.csv")
                     os.makedirs(os.path.dirname(csv_file_path), exist_ok=True)
                     df.to_csv(csv_file_path, index=True, header=True if not os.path.exists(csv_file_path) else False, mode='a' if os.path.exists(csv_file_path) else 'w')
 
             sys.exit()
-            self.start_time = self.end_time
-            time.sleep(1)  # Sleep for 60 sec
+            # self.start_time = self.end_time
+            # time.sleep(1)  # Sleep for 60 sec

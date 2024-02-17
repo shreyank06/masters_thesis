@@ -1,1 +1,0 @@
-https://github.com/trainindata/feature-engineering-for-time-series-forecasting/blob/main/02-Tabularizing-Time-Series/02-feature-engineering-air-pollutants.ipynb

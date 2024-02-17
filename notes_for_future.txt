@@ -1,7 +1,0 @@
-1. getting metrics using query_range api endpoint, currently getting metrics for all components at once and then parsing for storing metrics for respective componets.
-couldn't find a way to directly query prometheus for a particular component by filtering options as of now but feel it should be possible, try it later, 
-https://stackoverflow.com/questions/53165331/how-to-write-api-query-with-filters-in-prometheus
-
-2. Serving Model as an api
-https://medium.com/@deasadiqbal/transforming-machine-learning-models-into-apis-in-python-f9af614ab499
-

@@ -12,7 +12,7 @@ send_request() {
         "method": "bt_5g.gui.execution_start",
         "params": {
             "registration_number": '"$registration_number"',
-            "deregistration_number": 0,
+            "deregistration_number": 1250,
             "pdu_connection_number": 0,
             "handover_number": 0,
             "registration_and_pdu_number": 0,

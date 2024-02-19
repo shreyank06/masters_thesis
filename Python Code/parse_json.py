@@ -34,6 +34,23 @@ def filtered_json(config, data):
             filtered_results.append(result)
     return filtered_results
 
+
+def used_memory(merged_df, component):
+    for memtype in ['cm_globalP', 'cm_packetP', 'cm_sessionP', 'cm_transactionP']:
+        alloc_col = f'phoenix_memory_allocated_{memtype}_{component}'
+        waste_col = f'phoenix_memory_wasted_{memtype}_{component}'
+        if all(col in merged_df for col in [alloc_col, waste_col]):
+            merged_df[f'phoenix_memory_used_{memtype}_{component}'] = merged_df.pop(alloc_col) - merged_df.pop(waste_col)
+    return merged_df
+
+def memory_per_ue(merged_df, component):
+    for memtype in ['cm_globalP', 'cm_packetP', 'cm_sessionP', 'cm_transactionP']:
+        used_col = f'phoenix_memory_used_{memtype}_{component}'
+        subscriber_count_col = f'subscriber_count_Connected'
+        if all(col in merged_df for col in [used_col, subscriber_count_col]):
+            merged_df[f'memory_per_ue_{memtype}_{component}'] = merged_df[used_col] / merged_df[subscriber_count_col]
+    return merged_df
+
 def convert_to_dataframe(config, data):
 
     merged_df = pd.DataFrame()
@@ -69,12 +86,8 @@ def convert_to_dataframe(config, data):
             merged_df = df
     
     merged_df = merged_df.apply(pd.to_numeric, errors='ignore')
-
-    for memtype in ['cm_globalP', 'cm_packetP', 'cm_sessionP', 'cm_transactionP']:
-        alloc_col = f'phoenix_memory_allocated_{memtype}_{component}'
-        waste_col = f'phoenix_memory_wasted_{memtype}_{component}'
-        if all(col in merged_df for col in [alloc_col, waste_col]):
-            merged_df[f'phoenix_memory_used_{memtype}_{component}'] = merged_df.pop(alloc_col) - merged_df.pop(waste_col)
+    merged_df = used_memory(merged_df, component)
+    merged_df = memory_per_ue(merged_df, component)
             
     return merged_df
 

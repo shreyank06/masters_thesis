@@ -60,22 +60,25 @@ class CsvCollector:
 
         # Add traces for each column
         for col in df.columns[1:]:  # Start from the second column
-            fig.add_trace(go.Scatter(x=df[index_column], y=df[col], mode='lines', name=col))
+            fig.add_trace(go.Scatter(x=index_column, y=df[col], mode='lines', name=col))
 
         # Update layout
         fig.update_layout(
             title=f'All Columns vs {index_column}',
-            xaxis_title=index_column,
+            xaxis_title=str(index_column),  # Convert DatetimeIndex to string
             yaxis_title='Values',
             autosize=False,
             width=1000,
             height=600,
+            # Enable interactive legend for column filtering
+            legend=dict(traceorder="normal")
         )
 
+
         # Save the plot as an HTML file
-        html_file_path = os.path.join(folder_path, f"{self.registration_number}_{self.ops_per_second}_{0}{file_suffix}_all_columns_vs_{index_column}.html")
+        html_file_path = os.path.join(folder_path, f"{self.registration_number}_{self.ops_per_second}_{0}{file_suffix}_all_columns_vs_index.html")
         fig.write_html(html_file_path)
 
         # Close the figure
-        fig.close()
+        #fig.close()
 

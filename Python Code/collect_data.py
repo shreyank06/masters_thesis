@@ -1,9 +1,12 @@
+import pandas as pd
+import matplotlib.pyplot as plt
 from parse_json import fetch_and_convert_data
 import time
 from datetime import datetime, timedelta
 import os
 import sys
 import re
+import plotly.graph_objs as go
 
 class CsvCollector:
     def __init__(self, start_time, end_time, config, registration_number, ops_per_second):
@@ -41,6 +44,38 @@ class CsvCollector:
             csv_file_path = os.path.join(component_folder_path, f"{self.registration_number}_{self.ops_per_second}_{0}{file_suffix}_{self.config['component']}.csv")
             df.to_csv(csv_file_path, index=True, header=True if not os.path.exists(csv_file_path) else False, mode='a' if os.path.exists(csv_file_path) else 'w')
 
+            self.visualize_data(df, component_folder_path, file_suffix)
+
             sys.exit()
             # self.start_time = self.end_time
             # time.sleep(1)  # Sleep for 60 sec
+
+    def visualize_data(self, df, folder_path, file_suffix):
+        timestamp_col = df.columns[0]  # Assuming the timestamp column is the first column
+        num_columns = len(df.columns)
+        print(timestamp_col)
+
+        # Create an empty figure
+        fig = go.Figure()
+
+        # Add traces for each column
+        for col in df.columns[1:]:  # Start from the second column
+            fig.add_trace(go.Scatter(x=df[timestamp_col], y=df[col], mode='lines', name=col))
+
+        # Update layout
+        fig.update_layout(
+            title=f'All Columns vs {timestamp_col}',
+            xaxis_title=timestamp_col,
+            yaxis_title='Values',
+            autosize=False,
+            width=1000,
+            height=600,
+        )
+
+        # Save the plot as an HTML file
+        html_file_path = os.path.join(folder_path, f"{self.registration_number}_{self.ops_per_second}_{0}{file_suffix}_all_columns_vs_{timestamp_col}.html")
+        fig.write_html(html_file_path)
+
+        # Close the figure
+        fig.close()
+

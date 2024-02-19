@@ -51,21 +51,21 @@ class CsvCollector:
             # time.sleep(1)  # Sleep for 60 sec
 
     def visualize_data(self, df, folder_path, file_suffix):
-        timestamp_col = df.columns[0]  # Assuming the timestamp column is the first column
+        index_column = df.index
+
         num_columns = len(df.columns)
-        print(timestamp_col)
 
         # Create an empty figure
         fig = go.Figure()
 
         # Add traces for each column
         for col in df.columns[1:]:  # Start from the second column
-            fig.add_trace(go.Scatter(x=df[timestamp_col], y=df[col], mode='lines', name=col))
+            fig.add_trace(go.Scatter(x=df[index_column], y=df[col], mode='lines', name=col))
 
         # Update layout
         fig.update_layout(
-            title=f'All Columns vs {timestamp_col}',
-            xaxis_title=timestamp_col,
+            title=f'All Columns vs {index_column}',
+            xaxis_title=index_column,
             yaxis_title='Values',
             autosize=False,
             width=1000,
@@ -73,7 +73,7 @@ class CsvCollector:
         )
 
         # Save the plot as an HTML file
-        html_file_path = os.path.join(folder_path, f"{self.registration_number}_{self.ops_per_second}_{0}{file_suffix}_all_columns_vs_{timestamp_col}.html")
+        html_file_path = os.path.join(folder_path, f"{self.registration_number}_{self.ops_per_second}_{0}{file_suffix}_all_columns_vs_{index_column}.html")
         fig.write_html(html_file_path)
 
         # Close the figure

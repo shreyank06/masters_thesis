@@ -1,0 +1,7 @@
+timestamp,http_client_request_count_amf,http_client_response_count_amf,http_server_request_count_amf,cpu_amf_system,cpu_amf_user,subscriber_count_Connected,subscriber_count_Idle,subscriber_count_Pending,subscriber_count_Unregistered,phoenix_memory_used_cm_globalP_amf,phoenix_memory_used_cm_packetP_amf,phoenix_memory_used_cm_sessionP_amf,phoenix_memory_used_cm_transactionP_amf
+2024-02-19 07:26:12,8,8,3,0.0,0.009999999999999998,0,0,0,10000,37652,0,5184,656
+2024-02-19 07:26:13,8,8,3,0.0,0.009999999999999998,0,0,0,10000,37652,0,5184,656
+2024-02-19 07:26:14,188,187,3,0.03,0.08,75,0,0,9925,49108,56611,58323,13693
+2024-02-19 07:26:15,488,488,3,0.07999999999999999,0.16999999999999998,174,0,1,9825,68372,151200,145184,27472
+2024-02-19 07:26:16,788,787,3,0.15,0.3,275,0,1,9724,87508,245611,233323,47293
+2024-02-19 07:26:17,1088,1088,3,0.22,0.41,375,0,0,9625,106740,340200,320184,61072

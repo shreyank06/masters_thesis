@@ -1,8 +1,0 @@
-timestamp,http_client_request_count_amf,http_client_response_count_amf,http_server_request_count_amf,cpu_amf_system,cpu_amf_user,subscriber_count_Connected,subscriber_count_Idle,subscriber_count_Pending,subscriber_count_Unregistered,phoenix_memory_used_cm_globalP_amf,phoenix_memory_used_cm_packetP_amf,phoenix_memory_used_cm_sessionP_amf,phoenix_memory_used_cm_transactionP_amf
-2024-02-17 10:06:03,712,712,3,30.53,31.16,202,0,33,9765,82804,201549,210809,40072
-2024-02-17 10:06:04,715,715,3,30.55,31.19,203,0,33,9764,82996,202494,211684,40240
-2024-02-17 10:06:05,721,721,3,30.58,31.2,205,0,33,9762,83380,204384,213434,40576
-2024-02-17 10:06:06,727,727,3,30.58,31.22,207,0,33,9760,83764,206274,215184,40912
-2024-02-17 10:06:07,733,733,3,30.59,31.24,209,0,33,9758,84148,208164,216934,41248
-2024-02-17 10:06:08,739,739,3,30.59,31.26,211,0,33,9756,84532,210054,218684,41584
-2024-02-17 10:06:09,742,742,3,30.61,31.28,211,0,34,9755,84724,210999,219559,41984

@@ -5,10 +5,7 @@ send_request() {
     local url=$1
     local registration_number=$2
     local ops_per_second=$3
-
-    # Get current timestamp as start time
-    local start_time=$(date -d "-1 hour" +"%Y-%m-%dT%H:%M:%S")
-
+    
     # Define the parameters for the request in JSON format
     local params='{
         "jsonrpc": "2.0",
@@ -27,15 +24,16 @@ send_request() {
         "id": 1
     }'
 
+    # Get current timestamp as start time
+    local start_time=$(date -d "-1 hour" +"%Y-%m-%dT%H:%M:%S")
+
     # Send POST request with curl and save response
     local response=$(curl -s -X POST -H "Content-Type: application/json-rpc" -d "$params" "$url")
-
+    echo "1"
     # Check if execution is completed
     if [[ "$response" == *"Execution Finished"* ]]; then
         # Get current timestamp as end time
         local end_time=$(date -d "-1 hour" +"%Y-%m-%dT%H:%M:%S")
-        echo "Start Time: $start_time"
-        echo "End Time: $end_time"
     fi
 
     cd "Python Code"

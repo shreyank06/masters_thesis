@@ -11,11 +11,11 @@ send_request() {
         "jsonrpc": "2.0",
         "method": "bt_5g.gui.execution_start",
         "params": {
-            "registration_number": '"$registration_number"',
-            "deregistration_number": 1250,
+            "registration_number": 0,
+            "deregistration_number": 0,
             "pdu_connection_number": 0,
             "handover_number": 0,
-            "registration_and_pdu_number": 0,
+            "registration_and_pdu_number": '"$registration_number"',
             "an_release_number": 1,
             "service_request_number": 1,
             "ops_per_second": '"$ops_per_second"',
@@ -29,7 +29,7 @@ send_request() {
 
     # Send POST request with curl and save response
     local response=$(curl -s -X POST -H "Content-Type: application/json-rpc" -d "$params" "$url")
-    echo "1"
+    
     # Check if execution is completed
     if [[ "$response" == *"Execution Finished"* ]]; then
         # Get current timestamp as end time

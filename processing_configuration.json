@@ -5,6 +5,12 @@
         "http_server_request_count",
         "http_client_response_count",
         "namedprocess_namegroup_cpu_seconds_total",
+        "namedprocess_namegroup_memory_bytes",
+        "phoenix_memory_cm_allocated_bytes",
+        "phoenix_memory_cm_wasted_bytes",
+        "open5G_bt_subscriber_count"
+    ],
+    "queries_1": [
         "phoenix_memory_cm_allocated_bytes",
         "phoenix_memory_cm_wasted_bytes",
         "open5G_bt_subscriber_count"
@@ -12,7 +18,7 @@
     "start_time": "2024-01-29T11:10:00",
     "end_time": "2024-01-29T11:10:30",
     "step": "1s",
-    "component": "amf",
+    "component": "smf",
     "retrain_model":false,
     "get_csv": true
 }

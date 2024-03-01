@@ -16,11 +16,12 @@ class CsvCollector:
         self.connected_col_name = "subscriber_count_Connected"
         self.registration_number = registration_number
         self.ops_per_second = ops_per_second
+        self.df = None
 
     def get_existing_series(self):
         # Get series numbers from existing CSV filenames
         series_numbers = []
-        component_folder = self.config['component'] + '_csv_files'
+        component_folder = self.config['component'] + '_new_csv_files_2'
         component_folder_path = os.path.join(os.getcwd(), component_folder)
         if not os.path.exists(component_folder_path):
             os.makedirs(component_folder_path)
@@ -30,23 +31,42 @@ class CsvCollector:
             if series_match:
                 series_numbers.append(int(series_match.group(1)))
         return series_numbers, component_folder_path
+    
+    def fetch_and_save_csv(self):
+        # Check if 'data' folder exists, if not, create it
+        if not os.path.exists('data'):
+            os.makedirs('data')
+
+        csv_filename = f"{self.config['component']}_{self.registration_number}_{self.ops_per_second}_set.csv"
+        
+        counter = 0
+        while os.path.exists(os.path.join('data', csv_filename)):
+            counter += 1
+            csv_filename = f"{self.config['component']}_{self.registration_number}_{self.ops_per_second}_set_{counter}.csv"
+
+        # Save CSV file in 'data' folder
+        self.df.to_csv(os.path.join('data', csv_filename), index=True)
+        # self.visualize_data(self.df, 'data', '')  # Assuming this line is a visualization function call
+        
+        print(f"CSV file saved as: {csv_filename} in 'data' folder.")
 
     def collect_csv_data(self):
-        while True:
-            df = fetch_and_convert_data(self.config, 'queries', self.start_time, self.end_time, self.config['step'])
-            existing_series_numbers,component_folder_path = self.get_existing_series()
-            if existing_series_numbers:
-                new_series = max(existing_series_numbers) + 1
-            else:
-                new_series = 0
-            file_suffix = f"_s{new_series}"
+            self.df = fetch_and_convert_data(self.config, 'queries', self.start_time, self.end_time, self.config['step'])
+            self.fetch_and_save_csv()
 
-            csv_file_path = os.path.join(component_folder_path, f"{self.registration_number}_{self.ops_per_second}_{0}{file_suffix}_{self.config['component']}.csv")
-            df.to_csv(csv_file_path, index=True, header=True if not os.path.exists(csv_file_path) else False, mode='a' if os.path.exists(csv_file_path) else 'w')
+            # existing_series_numbers,component_folder_path = self.get_existing_series()
+            # if existing_series_numbers:
+            #     new_series = max(existing_series_numbers) + 1
+            # else:
+            #     new_series = 0
+            # file_suffix = f"_s{new_series}"
 
-            self.visualize_data(df, component_folder_path, file_suffix)
+            # # csv_file_path = os.path.join(component_folder_path, f"{self.registration_number}_{self.ops_per_second}_{0}{file_suffix}_{self.config['component']}.csv")
+            # # self.df.to_csv(csv_file_path, index=True, header=True if not os.path.exists(csv_file_path) else False, mode='a' if os.path.exists(csv_file_path) else 'w')
 
-            sys.exit()
+            # self.visualize_data(self.df, component_folder_path, file_suffix)
+
+            # sys.exit()
             # self.start_time = self.end_time
             # time.sleep(1)  # Sleep for 60 sec
 
@@ -59,7 +79,7 @@ class CsvCollector:
         fig = go.Figure()
 
         # Add traces for each column
-        for col in df.columns[1:]:  # Start from the second column
+        for col in df.columns[0:]:  # Start from the second column
             fig.add_trace(go.Scatter(x=index_column, y=df[col], mode='lines', name=col))
 
         # Update layout

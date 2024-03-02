@@ -20,6 +20,6 @@
     "step": "1s",
     "component": "smf",
     "retrain_model":false,
-    "get_csv": true
+    "get_csv": false
 }
 

@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from parse_json import fetch_and_convert_data
+from .parse_json import fetch_and_convert_data
 import time
 from datetime import datetime, timedelta
 import os

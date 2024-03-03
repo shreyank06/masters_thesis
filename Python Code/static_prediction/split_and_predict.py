@@ -4,8 +4,11 @@ from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import numpy as np
 import os
-from window_generator import WindowGenerator
+from .window_generator import WindowGenerator
 import tensorflow as tf
+from .baseline import Baseline
+from .models import Models
+import matplotlib.pyplot as plt
 
 class Predictor:
     def __init__(self, df, config):
@@ -51,14 +54,6 @@ class Predictor:
         np.savetxt(os.path.join(script_dir, 'trainX_descaled.csv'), trainX_flattened,fmt='%f', delimiter=',')
         np.savetxt(os.path.join(script_dir, 'trainY_descaled.csv'), trainY_flattened,fmt='%f', delimiter=',')
 
-    def normalize(self):
-        self.train_mean = self.train_df.mean()
-        self.train_std = self.train_df.std()
-
-        self.train_df = (self.train_df - self.train_mean) / self.train_std
-        self.val_df = (self.val_df - self.train_mean) / self.train_std
-        self.test_df = (self.test_df - self.train_mean) / self.train_std
-        
     def predict_on_test_data(self):
         self.split_train_test_data(0.8)
 
@@ -93,23 +88,52 @@ class Predictor:
         self.val_df = self.scaled_df[int(n*0.7):int(n*0.9)]
         self.test_df = self.scaled_df[int(n*0.9):]
 
-        num_features = self.scaled_df.shape[1]
-        
-        window_1 = WindowGenerator(input_width=24, label_width=1, 
-                    shift=24, train_df=self.train_df, val_df=self.val_df, test_df=self.test_df, label_columns=['phoenix_memory_used_cm_sessionP_smf'])
-        
-        w2 = WindowGenerator(input_width=6, label_width=1, shift=1,
-                     train_df=self.train_df, val_df=self.val_df, test_df=self.test_df, label_columns=['phoenix_memory_used_cm_sessionP_smf'])
+        #self.single_step_models(column_indices)
+        self.multi_step_models(self)
 
-        # Stack three slices, the length of the total window.
-        example_window = tf.stack([np.array(self.train_df[:w2.total_window_size]),
-                           np.array(self.train_df[100:100+w2.total_window_size]),
-                           np.array(self.train_df[200:200+w2.total_window_size])])
+    def single_step_models(self, column_indices):
+
+        num_features = self.scaled_df.shape[1]
+
+        single_step_window = WindowGenerator(
+                input_width=1, label_width=1, shift=1,
+                train_df=self.train_df, val_df=self.val_df, test_df=self.test_df, label_columns=['phoenix_memory_used_cm_sessionP_smf'])
         
-        example_inputs, example_labels = w2.split_window(example_window)
-        w2.example = example_inputs, example_labels
-        print(w2.example)
-        w2.plot()
+        wide_window = WindowGenerator(
+                input_width=24, label_width=24, shift=1,
+                train_df=self.train_df, val_df=self.val_df, test_df=self.test_df, label_columns=['phoenix_memory_used_cm_sessionP_smf'])
+        
+        baseline_model=Models(column_indices, wide_window)
+        baseline_model.create_baseline_model()
+
+        linear_model = Models(column_indices, wide_window)
+        densed_model = Models(column_indices, wide_window)
+
+        linear_model_val_performance, performance = linear_model.performance_evaluation('linear')
+        print(linear_model_val_performance, performance)
+
+        densed_model_val_performance, performance = densed_model.performance_evaluation('densed')
+        print(densed_model_val_performance, performance)
+        
+        
+        # for example_inputs, example_labels in single_step_window.train.take(1):
+        #     print(f'Inputs shape (batch, time, features): {example_inputs.shape}')
+        #     print(f'Labels shape (batch, time, features): {example_labels.shape}')
+
+        # w1 = WindowGenerator(input_width=24, label_width=1, 
+        #             shift=24, train_df=self.train_df, val_df=self.val_df, test_df=self.test_df, label_columns=['phoenix_memory_used_cm_sessionP_smf'])
+        
+        # w2 = WindowGenerator(input_width=6, label_width=1, shift=1,
+        #              train_df=self.train_df, val_df=self.val_df, test_df=self.test_df, label_columns=['phoenix_memory_used_cm_sessionP_smf'])
+        
+        # Stack three slices, the length of the total window.
+        # example_window = tf.stack([np.array(self.train_df[:w2.total_window_size]),
+        #                    np.array(self.train_df[100:100+w2.total_window_size]),
+        #                    np.array(self.train_df[200:200+w2.total_window_size])])
+        
+        #example_inputs, example_labels = w2.split_window(example_window)
+
+        #w2.plot()
 
         # print('All shapes are: (batch, time, features)')
         # print(f'Window shape: {example_window.shape}')
@@ -118,3 +142,20 @@ class Predictor:
 
         # w1 = window_1.__repr__
         # print(w1)
+            
+    def multi_step_models(self, column_indices):
+
+        CONV_WIDTH = 3
+        conv_window = WindowGenerator(
+            input_width=CONV_WIDTH,
+            label_width=1,
+            shift=1, train_df=self.train_df, val_df=self.val_df, test_df=self.test_df,
+            label_columns=['phoenix_memory_used_cm_sessionP_smf'])
+
+        multi_step_model = Models(column_indices, conv_window)
+        multi_step_model_val_performance, multi_step_model_performance = multi_step_model.performance_evaluation('multi_step_densed', conv_window)
+
+        conv_window.plot()
+        plt.title("Given 3 hours of inputs, predict 1 hour into the future.")
+
+

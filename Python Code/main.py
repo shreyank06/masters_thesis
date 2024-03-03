@@ -1,11 +1,11 @@
 # main.py
 
-from collect_data import CsvCollector
+from data_collection.collect_data import CsvCollector
 import json
 from datetime import datetime
 import sys
 import pandas as pd
-from split_and_predict import Predictor
+from static_prediction.split_and_predict import Predictor
 
 def main(start_time, end_time, registration_number, ops_per_second):
     with open("../processing_configuration.json", "r") as config_file:
@@ -22,6 +22,7 @@ def main(start_time, end_time, registration_number, ops_per_second):
 
     predictor = Predictor(df.apply(pd.to_numeric, errors='coerce'), config)
     predictor.split()
+    predictor.single_step_models()
     # predictor.predict_on_test_data()  # Example usage of predict_on_test_data method
 
 if __name__ == "__main__":

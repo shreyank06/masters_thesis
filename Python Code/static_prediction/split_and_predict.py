@@ -119,34 +119,6 @@ class Predictor:
 
         self.val_mae.extend([linear_model_val_performance, densed_model_val_performance])
         self.perform.extend([linear_performance, densed_performance])
-        
-        
-        # for example_inputs, example_labels in single_step_window.train.take(1):
-        #     print(f'Inputs shape (batch, time, features): {example_inputs.shape}')
-        #     print(f'Labels shape (batch, time, features): {example_labels.shape}')
-
-        # w1 = WindowGenerator(input_width=24, label_width=1, 
-        #             shift=24, train_df=self.train_df, val_df=self.val_df, test_df=self.test_df, label_columns=['phoenix_memory_used_cm_sessionP_smf'])
-        
-        # w2 = WindowGenerator(input_width=6, label_width=1, shift=1,
-        #              train_df=self.train_df, val_df=self.val_df, test_df=self.test_df, label_columns=['phoenix_memory_used_cm_sessionP_smf'])
-        
-        # Stack three slices, the length of the total window.
-        # example_window = tf.stack([np.array(self.train_df[:w2.total_window_size]),
-        #                    np.array(self.train_df[100:100+w2.total_window_size]),
-        #                    np.array(self.train_df[200:200+w2.total_window_size])])
-        
-        #example_inputs, example_labels = w2.split_window(example_window)
-
-        #w2.plot()
-
-        # print('All shapes are: (batch, time, features)')
-        # print(f'Window shape: {example_window.shape}')
-        # print(f'Inputs shape: {example_inputs.shape}')
-        # print(f'Labels shape: {example_labels.shape}')
-
-        # w1 = window_1.__repr__
-        # print(w1)
             
     def multi_step_models(self, column_indices):
 

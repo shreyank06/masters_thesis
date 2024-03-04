@@ -58,21 +58,35 @@ class Models:
             history = self.compile_and_fit(linear)
             val_performance[model_type] = linear.evaluate(self.window_size.val)
             performance[model_type] = linear.evaluate(self.window_size.test, verbose=0)
-            self.window_size.plot(linear)
+            #self.window_size.plot(linear)
 
         elif model_type =='densed':
             densed = self.densed_model()
             history = self.compile_and_fit(densed)
             val_performance[model_type] = densed.evaluate(self.window_size.val)
             performance[model_type] = densed.evaluate(self.window_size.test, verbose=0)
-            self.window_size.plot(densed)
+            #self.window_size.plot(densed)
 
         elif model_type == 'multi_step_densed':
             multi_step_densed_model = self.multi_step_densed_model(conv_window)
-            history = self.compile_and_fit(multi_step_densed_model, conv_window)
+            history = self.compile_and_fit(multi_step_densed_model)
             val_performance[model_type] = multi_step_densed_model.evaluate(conv_window.val)
             performance[model_type] = multi_step_densed_model.evaluate(conv_window.test, verbose=0)
-            conv_window.plot(multi_step_densed_model)
+            #conv_window.plot(multi_step_densed_model)
+
+        elif model_type == 'convolutional_model':
+            multi_step_densed_model = self.convolutional_model(conv_window)
+            history = self.compile_and_fit(multi_step_densed_model)
+            val_performance[model_type] = multi_step_densed_model.evaluate(conv_window.val)
+            performance[model_type] = multi_step_densed_model.evaluate(conv_window.test, verbose=0)
+            #conv_window.plot(multi_step_densed_model)
+
+        elif model_type == 'lstm_model':
+            lstm_model = self.lstm_model()
+            history = self.compile_and_fit(lstm_model)
+            val_performance['LSTM'] = lstm_model.evaluate(conv_window.val)
+            performance['LSTM'] = lstm_model.evaluate(conv_window.test, verbose=0)
+            #conv_window.plot(lstm_model)
 
         return val_performance, performance
     
@@ -88,7 +102,28 @@ class Models:
         # Shape: (outputs) => (1, outputs)
         tf.keras.layers.Reshape([1, -1]),
     ])
-        
         return multi_step_dense
+    
+    def convolutional_model(self, wide_conv_window):
+        conv_model = tf.keras.Sequential([
+            tf.keras.layers.Conv1D(filters=32,
+                                kernel_size=(wide_conv_window.input_width,),
+                                activation='relu'),
+            tf.keras.layers.Dense(units=32, activation='relu'),
+            tf.keras.layers.Dense(units=24),  # Adjust units to match the desired output shape
+            tf.keras.layers.Reshape([24, 1])  # Reshape to (batch_size, 24, 1)
+        ])
+        return conv_model
+    
+    def lstm_model(self):
+        lstm_model = tf.keras.models.Sequential([
+        # Shape [batch, time, features] => [batch, time, lstm_units]
+        tf.keras.layers.LSTM(32, return_sequences=True),
+        # Shape => [batch, time, features]
+        tf.keras.layers.Dense(units=1)
+        ])
+        return lstm_model
+
+
         
 

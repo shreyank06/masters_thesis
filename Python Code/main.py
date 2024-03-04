@@ -22,7 +22,6 @@ def main(start_time, end_time, registration_number, ops_per_second):
 
     predictor = Predictor(df.apply(pd.to_numeric, errors='coerce'), config)
     predictor.split()
-    predictor.single_step_models()
     # predictor.predict_on_test_data()  # Example usage of predict_on_test_data method
 
 if __name__ == "__main__":

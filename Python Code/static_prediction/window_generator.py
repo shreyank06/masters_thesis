@@ -55,8 +55,21 @@ class WindowGenerator():
 
       return inputs, labels
   
-  def plot(self, model=None, plot_col='phoenix_memory_used_cm_sessionP_smf', max_subplots=3):
-      inputs, labels = self.example
+  def plot(self, dataset='train', model=None, plot_col='phoenix_memory_used_cm_sessionP_smf', max_subplots=3):
+      
+          
+      if dataset == 'train':
+          inputs, labels = next(iter(self.train))
+      elif dataset == 'val':
+          print(4444)
+          inputs, labels = next(iter(self.val))
+      elif dataset == 'test':
+          inputs, labels = next(iter(self.test))
+      elif dataset == 'example':
+          inputs, labels = self.example
+      else:
+          raise ValueError("Invalid dataset. Choose 'train', 'val', or 'test'.")
+      #inputs, labels = self.example
       plt.figure(figsize=(12, 8))
       plot_col_index = self.column_indices[plot_col]
       max_n = min(max_subplots, len(inputs))

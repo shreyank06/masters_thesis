@@ -36,9 +36,10 @@ class Predictor:
         self.train_df = self.scaled_df[0:int(n*0.7)]
         self.val_df = self.scaled_df[int(n*0.7):int(n*0.9)]
         self.test_df = self.scaled_df[int(n*0.9):]
-        self.train_df.to_csv('train_data.csv', index=False)
+        # self.train_df.to_csv('train_data.csv', index=False)
+        # self.val_df.to_csv('val_data.csv', index = False)
 
-        #self.single_step_models(column_indices)
+        self.single_step_models(column_indices)
         self.multi_step_models(self)
 
 
@@ -54,18 +55,18 @@ class Predictor:
                 input_width=24, label_width=24, shift=12,
                 train_df=self.train_df, val_df=self.val_df, test_df=self.test_df, label_columns=['phoenix_memory_used_cm_sessionP_smf'])
         
-        baseline_model=Models(column_indices, wide_window)
-        baseline_model.create_baseline_model()
+        # baseline_model=Models(column_indices, wide_window)
+        # baseline_model.create_baseline_model()
 
-        linear_model = Models(column_indices, wide_window)
+        #linear_model = Models(column_indices, wide_window)
         densed_model = Models(column_indices, wide_window)
 
-        linear_model_val_performance, linear_performance = linear_model.performance_evaluation('linear', wide_window)
+        #linear_model_val_performance, linear_performance = linear_model.performance_evaluation('linear', wide_window)
 
         densed_model_val_performance, densed_performance = densed_model.performance_evaluation('densed', wide_window)
 
-        self.val_mae_val.extend([linear_model_val_performance, densed_model_val_performance])
-        self.val_mae_test.extend([linear_model_val_performance, densed_model_val_performance])
+        # self.val_mae_val.extend([linear_model_val_performance, densed_model_val_performance])
+        # self.val_mae_test.extend([linear_model_val_performance, densed_model_val_performance])
             
     def multi_step_models(self, column_indices):
 

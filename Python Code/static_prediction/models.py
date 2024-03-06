@@ -53,40 +53,46 @@ class Models:
         val_performance = {}
         performance = {}
 
-        if model_type =='linear':
-            linear = self.linear_model()
-            history = self.compile_and_fit(linear)
-            val_performance[model_type] = linear.evaluate(self.window_size.val)
-            performance[model_type] = linear.evaluate(self.window_size.test, verbose=0)
-            self.window_size.plot(linear)
+        # if model_type =='linear':
+        #     linear = self.linear_model()
+        #     history = self.compile_and_fit(linear)
+        #     val_performance[model_type] = linear.evaluate(self.window_size.val)
+        #     performance[model_type] = linear.evaluate(self.window_size.test, verbose=0)
+        #     self.window_size.plot(linear)
 
-        elif model_type =='densed':
+        if model_type =='densed':
             densed = self.densed_model()
             history = self.compile_and_fit(densed)
             val_performance[model_type] = densed.evaluate(self.window_size.val)
             performance[model_type] = densed.evaluate(self.window_size.test, verbose=0)
-            self.window_size.plot(densed)
+            self.window_size.plot(dataset = 'train', model=densed)
+            self.window_size.plot(dataset='test', model=densed)
+            self.window_size.plot(dataset = 'example', model=densed)
 
         elif model_type == 'multi_step_densed':
             multi_step_densed_model = self.multi_step_densed_model(conv_window)
             history = self.compile_and_fit(multi_step_densed_model)
             val_performance[model_type] = multi_step_densed_model.evaluate(conv_window.val)
             performance[model_type] = multi_step_densed_model.evaluate(conv_window.test, verbose=0)
-            conv_window.plot(multi_step_densed_model)
+            conv_window.plot(dataset= 'train', model = multi_step_densed_model)
+            conv_window.plot(dataset='test', model = multi_step_densed_model)
+            
 
         elif model_type == 'convolutional_model':
             multi_step_densed_model = self.convolutional_model(conv_window)
             history = self.compile_and_fit(multi_step_densed_model)
             val_performance[model_type] = multi_step_densed_model.evaluate(conv_window.val)
             performance[model_type] = multi_step_densed_model.evaluate(conv_window.test, verbose=0)
-            conv_window.plot(multi_step_densed_model)
+            conv_window.plot(dataset= 'train', model = multi_step_densed_model)
+            conv_window.plot(dataset='test', model = multi_step_densed_model)
 
         elif model_type == 'lstm_model':
             lstm_model = self.lstm_model()
             history = self.compile_and_fit(lstm_model)
             val_performance['LSTM'] = lstm_model.evaluate(conv_window.val)
             performance['LSTM'] = lstm_model.evaluate(conv_window.test, verbose=0)
-            conv_window.plot(lstm_model)
+            conv_window.plot(dataset = 'train', model = lstm_model)
+            conv_window.plot(dataset = 'test', model = lstm_model)
 
         return val_performance, performance
     

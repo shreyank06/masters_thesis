@@ -3,6 +3,7 @@ import pandas as pd
 import csv
 import sys
 import json
+from sklearn.feature_extraction import DictVectorizer
 
 def fetch_prometheus_data(config, start, end, step):
     queries = '|'.join(config['queries'])
@@ -16,12 +17,36 @@ def fetch_prometheus_data(config, start, end, step):
 
     url = config['PROMETHEUS_URL']
     response = requests.get(url, params=params)
+    results = response.json()['data']['result']
 
     if response.status_code == 200:
         return response.json()
     else:
         raise Exception(f"Error fetching data: {response.text}")
+
+
+def convert_json_to_features(json):
+    vectorizer = DictVectorizer()
+    features_list = []
+
+    for result in json['data']['result']:
+        metric = result.get('metric', {})
+        values = result.get('values', [])  # Get the 'metric' dictionary or an empty dictionary if it doesn't exist
+        metric_name = metric.get('__name__', 'N/A')  # Get the 'name' key or set default value to 'N/A' if it doesn't exist
+        if metric.get('phnf') == 'smf':
+            # print("Metric Name:", metric_name)
+            # print("Values:", values)
+            features = {}
+            features['metric_name'] = metric_name
+            features['Values'] = [item[1] for item in values]
+            features['index'] = [item[0] for item in values]
+            features_list.append(features)
     
+    print(features_list)
+    X = vectorizer.transform(features_list)
+    print(X)
+    sys.exit()
+
 def filtered_json(config, data):
     filtered_results = []
     for result in data["data"]["result"]:
@@ -55,11 +80,11 @@ def memory_per_ue(merged_df, component):
 def process_memory_to_mb(merged_df, component):
     # Find columns matching the pattern 'process_memory_{component}_*'
     process_memory_cols = [col for col in merged_df.columns if col.startswith(f'process_memory_{component}_')]
-    
+
     # Convert values in matching columns to megabytes
     for col in process_memory_cols:
         merged_df[col] = merged_df[col] / 1000000
-    
+
     return merged_df
 
 def convert_to_dataframe(config, data):
@@ -81,8 +106,8 @@ def convert_to_dataframe(config, data):
             if'wasted' in str(metric):
                 memtype = metric["metric"].get("memtype", "unknown")
                 column_name = f'phoenix_memory_wasted_{memtype}_{component}'
-            if ('open5G_bt_subscriber_count' in str(metric)):  
-                subscriber_state = metric["metric"].get("subscriber_state", "unknown") 
+            if ('open5G_bt_subscriber_count' in str(metric)):
+                subscriber_state = metric["metric"].get("subscriber_state", "unknown")
                 column_name = f'subscriber_count_{subscriber_state}'
         if job == 'process':
             if'cpu' in str(metric):
@@ -98,14 +123,17 @@ def convert_to_dataframe(config, data):
             merged_df = pd.merge(merged_df, df, how='inner', left_index=True, right_index=True)
         else:
             merged_df = df
-    
+
     merged_df = merged_df.apply(pd.to_numeric, errors='ignore')
     merged_df = used_memory(merged_df, component)
     #merged_df = memory_per_ue(merged_df, component)
     #merged_df = process_memory_to_mb(merged_df, component)
-            
+
     return merged_df
 
 def fetch_and_convert_data(config, query_type, start_time, end_time, step):
     data = fetch_prometheus_data(config, start_time, end_time, step)
+    if config['convert_json_to_features']:
+        features = convert_json_to_features(data)
+
     return convert_to_dataframe(config, data)

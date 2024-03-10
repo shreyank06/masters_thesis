@@ -52,21 +52,21 @@ class Predictor:
                 train_df=self.train_df, val_df=self.val_df, test_df=self.test_df, label_columns=['phoenix_memory_used_cm_sessionP_smf'])
         
         wide_window = WindowGenerator(
-                input_width=24, label_width=24, shift=12,
+                input_width=24, label_width=24, shift=24,
                 train_df=self.train_df, val_df=self.val_df, test_df=self.test_df, label_columns=['phoenix_memory_used_cm_sessionP_smf'])
         
         # baseline_model=Models(column_indices, wide_window)
         # baseline_model.create_baseline_model()
 
-        #linear_model = Models(column_indices, wide_window)
+        linear_model = Models(column_indices, wide_window)
         densed_model = Models(column_indices, wide_window)
 
-        #linear_model_val_performance, linear_performance = linear_model.performance_evaluation('linear', wide_window)
+        linear_model_val_performance, linear_performance = linear_model.performance_evaluation('linear', wide_window)
 
         densed_model_val_performance, densed_performance = densed_model.performance_evaluation('densed', wide_window)
 
-        # self.val_mae_val.extend([linear_model_val_performance, densed_model_val_performance])
-        # self.val_mae_test.extend([linear_model_val_performance, densed_model_val_performance])
+        self.val_mae_val.extend([linear_model_val_performance, densed_model_val_performance])
+        self.val_mae_test.extend([linear_model_val_performance, densed_model_val_performance])
             
     def multi_step_models(self, column_indices):
 
@@ -77,8 +77,8 @@ class Predictor:
             shift=1, train_df=self.train_df, val_df=self.val_df, test_df=self.test_df,
             label_columns=['phoenix_memory_used_cm_sessionP_smf'])
 
-        multi_step_model = Models(column_indices, conv_window)
-        multi_step_model_val_performance, multi_step_model_performance = multi_step_model.performance_evaluation('multi_step_densed', conv_window)
+        # multi_step_model = Models(column_indices, conv_window)
+        # multi_step_model_val_performance, multi_step_model_performance = multi_step_model.performance_evaluation('multi_step_densed', conv_window)
 
         # conv_window.plot()
         # plt.title("Given 3 hours of inputs, predict 1 hour into the future.")
@@ -100,10 +100,10 @@ class Predictor:
         lstm_model_val_performance, lstm_step_model_performance = lstm_model.performance_evaluation('lstm_model', wide_window)
 
 
-        self.val_mae_val.extend([multi_step_model_val_performance, convo_model_val_performance, lstm_model_val_performance])
-        self.val_mae_test.extend([multi_step_model_performance, convo_step_model_performance, lstm_step_model_performance])
+        self.val_mae_val.extend([convo_model_val_performance, lstm_model_val_performance])
+        self.val_mae_test.extend([convo_step_model_performance, lstm_step_model_performance])
 
-        #print(self.val_mae_val,'\n', self.val_mae_test)
+        print(self.val_mae_val,'\n', self.val_mae_test)
         self.plot_mae_comparison()
     
     def plot_mae_comparison(self):

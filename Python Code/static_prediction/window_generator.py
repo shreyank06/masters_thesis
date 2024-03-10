@@ -1,6 +1,7 @@
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
+import sys
 
 class WindowGenerator():
   def __init__(self, input_width, label_width, shift,
@@ -61,7 +62,6 @@ class WindowGenerator():
       if dataset == 'train':
           inputs, labels = next(iter(self.train))
       elif dataset == 'val':
-          print(4444)
           inputs, labels = next(iter(self.val))
       elif dataset == 'test':
           inputs, labels = next(iter(self.test))
@@ -73,6 +73,7 @@ class WindowGenerator():
       plt.figure(figsize=(12, 8))
       plot_col_index = self.column_indices[plot_col]
       max_n = min(max_subplots, len(inputs))
+      
       for n in range(max_n):
         plt.subplot(max_n, 1, n+1)
         plt.ylabel(f'{plot_col} [normed]')
@@ -91,6 +92,8 @@ class WindowGenerator():
                     edgecolors='k', label='Labels', c='#2ca02c', s=64)
         if model is not None:
           predictions = model(inputs)
+          #print(predictions[n, :, label_col_index])
+          #sys.exit()
           plt.scatter(self.label_indices, predictions[n, :, label_col_index],
                       marker='X', edgecolors='k', label='Predictions',
                       c='#ff7f0e', s=64)

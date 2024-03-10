@@ -18,10 +18,10 @@ def main(start_time, end_time, registration_number, ops_per_second):
         collector = CsvCollector(config['start_time'], config['end_time'], config, registration_number, ops_per_second)
         collector.collect_csv_data()
 
-    df = pd.read_csv("data/smf_1000_1_set_1.csv")  # Load your DataFrame here
+    # df = pd.read_csv("data/smf_1000_1_set_1.csv")  # Load your DataFrame here
 
-    predictor = Predictor(df.apply(pd.to_numeric, errors='coerce'), config)
-    predictor.split()
+    # predictor = Predictor(df.apply(pd.to_numeric, errors='coerce'), config)
+    # predictor.split()
     # predictor.predict_on_test_data()  # Example usage of predict_on_test_data method
 
 if __name__ == "__main__":

@@ -23,8 +23,8 @@ class Predictor:
         self.label_width = None
         self.shift = None
         self.label_columns = None
-        self.val_mae_val = []
-        self.val_mae_test=[]
+        self.mae_val = []
+        self.mae_test=[]
         self.data = None
 
     def split(self):
@@ -39,71 +39,51 @@ class Predictor:
         # self.train_df.to_csv('train_data.csv', index=False)
         # self.val_df.to_csv('val_data.csv', index = False)
 
-        self.single_step_models(column_indices)
-        self.multi_step_models(self)
+        self.predict(column_indices)
+        #self.multi_step_models(self)
 
 
-    def single_step_models(self, column_indices):
+    def predict(self, column_indices):
 
         num_features = self.scaled_df.shape[1]
-
-        single_step_window = WindowGenerator(
-                input_width=1, label_width=1, shift=1,
-                train_df=self.train_df, val_df=self.val_df, test_df=self.test_df, label_columns=['phoenix_memory_used_cm_sessionP_smf'])
         
         wide_window = WindowGenerator(
-                input_width=24, label_width=24, shift=24,
-                train_df=self.train_df, val_df=self.val_df, test_df=self.test_df, label_columns=['phoenix_memory_used_cm_sessionP_smf'])
+                input_width=self.config['window_width']['input_width'], label_width=self.config['window_width']['label_width'], shift=self.config['window_width']['shift'],
+                train_df=self.train_df, val_df=self.val_df, test_df=self.test_df, label_columns=[self.config['label_columns']+self.config['component']])
         
         # baseline_model=Models(column_indices, wide_window)
         # baseline_model.create_baseline_model()
 
-        linear_model = Models(column_indices, wide_window)
-        densed_model = Models(column_indices, wide_window)
-
-        linear_model_val_performance, linear_performance = linear_model.performance_evaluation('linear', wide_window)
-
-        densed_model_val_performance, densed_performance = densed_model.performance_evaluation('densed', wide_window)
-
-        self.val_mae_val.extend([linear_model_val_performance, densed_model_val_performance])
-        self.val_mae_test.extend([linear_model_val_performance, densed_model_val_performance])
-            
-    def multi_step_models(self, column_indices):
-
-        CONV_WIDTH = 3
-        conv_window = WindowGenerator(
-            input_width=CONV_WIDTH,
-            label_width=1,
-            shift=1, train_df=self.train_df, val_df=self.val_df, test_df=self.test_df,
-            label_columns=['phoenix_memory_used_cm_sessionP_smf'])
-
-        # multi_step_model = Models(column_indices, conv_window)
-        # multi_step_model_val_performance, multi_step_model_performance = multi_step_model.performance_evaluation('multi_step_densed', conv_window)
-
-        # conv_window.plot()
-        # plt.title("Given 3 hours of inputs, predict 1 hour into the future.")
-
-        LABEL_WIDTH = 22
-        INPUT_WIDTH = LABEL_WIDTH + (CONV_WIDTH - 1)
-        wide_window = WindowGenerator(
-            input_width=INPUT_WIDTH,
-            label_width=24,
-            shift=24, train_df=self.train_df, val_df=self.val_df, test_df=self.test_df,
-             label_columns=['phoenix_memory_used_cm_sessionP_smf'])
-        
-        convolutional_model = Models(column_indices, wide_window)
-        convo_model_val_performance, convo_step_model_performance = convolutional_model.performance_evaluation('convolutional_model', wide_window)
-        #conv_model = convolutional_model.convolutional_model(wide_conv_window)
-
-        lstm_model = Models(column_indices, wide_window)
-        lstm = lstm_model.lstm_model()  
-        lstm_model_val_performance, lstm_step_model_performance = lstm_model.performance_evaluation('lstm_model', wide_window)
-
-
-        self.val_mae_val.extend([convo_model_val_performance, lstm_model_val_performance])
-        self.val_mae_test.extend([convo_step_model_performance, lstm_step_model_performance])
-
-        print(self.val_mae_val,'\n', self.val_mae_test)
+        if self.config['models']['linear']:
+            linear_model = Models(column_indices, wide_window, num_features)
+            linear_model_val_performance, linear_performance = linear_model.performance_evaluation('linear', wide_window)
+            self.mae_val.extend([linear_model_val_performance])
+            self.mae_test.extend([linear_performance])
+        if self.config['models']['densed']:
+            densed_model = Models(column_indices, wide_window, num_features)
+            densed_model_val_performance, densed_performance = densed_model.performance_evaluation('densed', wide_window)
+            self.mae_val.extend([densed_model_val_performance])
+            self.mae_test.extend([ densed_performance])
+        if self.config['models']['convolutional']:
+            convolutional_model = Models(column_indices, wide_window, num_features)
+            convo_model_val_performance, convo_step_model_performance = convolutional_model.performance_evaluation('convolutional_model', wide_window)
+            self.mae_val.extend([convo_model_val_performance])
+            self.mae_test.extend([convo_step_model_performance])
+        if self.config['models']['lstm']:
+            lstm_model = Models(column_indices, wide_window, num_features)
+            lstm_model_val_performance, lstm_step_model_performance = lstm_model.performance_evaluation('lstm_model', wide_window)
+            self.mae_val.extend([lstm_model_val_performance])
+            self.mae_test.extend([lstm_step_model_performance])
+        if self.config['models']['multi_step_linear_single_shot']:
+            single_shot_linear_model = Models(column_indices, wide_window, num_features)
+            single_shot_linear_model_val_performance, single_shot_linear_model_test_performance = single_shot_linear_model.performance_evaluation('single_shot_linear', wide_window)
+            self.mae_val.extend([single_shot_linear_model_val_performance])
+            self.mae_test.extend([single_shot_linear_model_test_performance])
+        if self.config['models']['multi_step_densed_model']:
+            multi_step_densed_model = Models(column_indices, wide_window, num_features)
+            multi_step_densed_model_val_performance, multi_step_densed_model_test_performance = multi_step_densed_model.performance_evaluation('multi_step_densed', wide_window)
+            self.mae_val.extend([multi_step_densed_model_val_performance])
+            self.mae_test.extend([multi_step_densed_model_test_performance])    
         self.plot_mae_comparison()
     
     def plot_mae_comparison(self):
@@ -111,12 +91,12 @@ class Predictor:
         test_maes = []
         model_names = set()
 
-        for val_mae in self.val_mae_val:
+        for val_mae in self.mae_val:
             for model_name, values in val_mae.items():
                 val_maes.append(values[1])
                 model_names.add(model_name)
 
-        for test_mae in self.val_mae_test:
+        for test_mae in self.mae_test:
             for model_name, values in test_mae.items():
                 test_maes.append(values[1])
                 model_names.add(model_name)

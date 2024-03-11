@@ -20,7 +20,22 @@
     "step": "1s",
     "component": "smf",
     "retrain_model":false,
-    "get_csv": true,
-    "convert_json_to_features":true
+    "get_csv": false,
+    "convert_json_to_features":false,
+    "window_width": {
+        "input_width": 24,
+        "label_width": 24,
+        "shift": 24
+    },
+    "label_columns": "phoenix_memory_used_cm_sessionP_",
+    "models":
+    {
+        "linear":true,
+        "densed":true,
+        "convolutional":true,
+        "lstm":true,
+        "multi_step_linear_single_shot": true,
+        "multi_step_densed_model": true
+    }
 }
 

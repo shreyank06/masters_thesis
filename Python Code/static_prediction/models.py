@@ -4,9 +4,10 @@ from .baseline import Baseline
 class Models:
     MAX_EPOCHS = 20
 
-    def __init__(self, column_indices, window_size):
+    def __init__(self, column_indices, window_size, num_features):
         self.column_indices = column_indices
         self.window_size = window_size
+        self.num_features = num_features
 
     def create_baseline_model(self):
         baseline = Baseline(label_index=self.column_indices['phoenix_memory_used_cm_sessionP_smf'])
@@ -48,71 +49,47 @@ class Models:
                             callbacks=[early_stopping])
         return history
 
-    def performance_evaluation(self, model_type, conv_window):
+    def performance_evaluation(self, model_type, wide_window):
 
         val_performance = {}
         performance = {}
 
         if model_type =='linear':
-            linear = self.linear_model()
-            history = self.compile_and_fit(linear)
-            val_performance[model_type] = linear.evaluate(self.window_size.val)
-            performance[model_type] = linear.evaluate(self.window_size.test, verbose=0)
-            self.window_size.plot(dataset = 'train', model = linear)
-            # self.window_size.plot(dataset = 'example', model = linear)
-            # self.window_size.plot(dataset = 'test', model = linear)
-            
-
-        if model_type =='densed':
-            densed = self.densed_model()
-            history = self.compile_and_fit(densed)
-            val_performance[model_type] = densed.evaluate(self.window_size.val)
-            performance[model_type] = densed.evaluate(self.window_size.test, verbose=0)
-            self.window_size.plot(dataset = 'train', model=densed)
-            # self.window_size.plot(dataset = 'example', model=densed)
-            # self.window_size.plot(dataset='test', model=densed)
-            
-
-        if model_type == 'multi_step_densed':
-            multi_step_densed_model = self.multi_step_densed_model(conv_window)
-            history = self.compile_and_fit(multi_step_densed_model)
-            val_performance[model_type] = multi_step_densed_model.evaluate(conv_window.val)
-            performance[model_type] = multi_step_densed_model.evaluate(conv_window.test, verbose=0)
-            conv_window.plot(dataset= 'train', model = multi_step_densed_model)
-            # conv_window.plot(dataset='test', model = multi_step_densed_model)
-            
-
-        elif model_type == 'convolutional_model':
-            multi_step_densed_model = self.convolutional_model(conv_window)
-            history = self.compile_and_fit(multi_step_densed_model)
-            val_performance[model_type] = multi_step_densed_model.evaluate(conv_window.val)
-            performance[model_type] = multi_step_densed_model.evaluate(conv_window.test, verbose=0)
-            conv_window.plot(dataset= 'train', model = multi_step_densed_model)
-            #conv_window.plot(dataset='test', model = multi_step_densed_model)
-
+            model = self.linear_model()
+        if model_type == 'densed':
+            model = self.densed_model()
+        if model_type == 'convolutional_model':
+            model = self.convolutional_model(wide_window)
         if model_type == 'lstm_model':
-            lstm_model = self.lstm_model()
-            history = self.compile_and_fit(lstm_model)
-            val_performance['LSTM'] = lstm_model.evaluate(conv_window.val)
-            performance['LSTM'] = lstm_model.evaluate(conv_window.test, verbose=0)
-            conv_window.plot(dataset = 'train', model = lstm_model)
-            #conv_window.plot(dataset = 'test', model = lstm_model)
+            model = self.lstm_model()
+        if model_type == 'single_shot_linear':
+            model = self.multi_step_linear_single_shot(wide_window, self.num_features)
+            
+        history = self.compile_and_fit(model)
+        val_performance[model_type] = model.evaluate(self.window_size.val)
+        performance[model_type] = model.evaluate(self.window_size.test, verbose=0)
+        self.window_size.plot(dataset = 'train', model = model)
+        # self.window_size.plot(dataset = 'example', model = model)
+        # self.window_size.plot(dataset = 'test', model = model)
 
         return val_performance, performance
     
-    def multi_step_densed_model(self, conv_window):
+    def multi_step_densed_model(self, wide_window, num_features):
 
-        multi_step_dense = tf.keras.Sequential([
-        # Shape: (time, features) => (time*features)
-        tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(units=32, activation='relu'),
-        tf.keras.layers.Dense(units=32, activation='relu'),
-        tf.keras.layers.Dense(units=1),
-        # Add back the time dimension.
-        # Shape: (outputs) => (1, outputs)
-        tf.keras.layers.Reshape([1, -1]),
-    ])
-        return multi_step_dense
+        multi_step_dense_model = tf.keras.Sequential([
+            # Take the last time step.
+            # Shape [batch, time, features] => [batch, 1, features]
+            tf.keras.layers.Lambda(lambda x: x[:, -1:, :]),
+            # Shape => [batch, 1, dense_units]
+            tf.keras.layers.Dense(512, activation='relu'),
+            # Shape => [batch, out_steps*features]
+            tf.keras.layers.Dense(wide_window.OUT_STEPS*num_features,
+                                kernel_initializer=tf.initializers.zeros()),
+            # Shape => [batch, out_steps, features]
+            tf.keras.layers.Reshape([wide_window.OUT_STEPS, num_features])
+        ])
+
+        return multi_step_dense_model
     
     def convolutional_model(self, wide_conv_window):
         conv_model = tf.keras.Sequential([
@@ -133,6 +110,32 @@ class Models:
         tf.keras.layers.Dense(units=1)
         ])
         return lstm_model
+
+    def multi_step_linear_single_shot(self, wide_window, num_features):
+        multi_linear_model = tf.keras.Sequential([
+        # Take the last time-step.
+        # Shape [batch, time, features] => [batch, 1, features]
+        tf.keras.layers.Lambda(lambda x: x[:, -1:, :]),
+        # Shape => [batch, 1, out_steps*features]
+        tf.keras.layers.Dense(wide_window.label_width*num_features,
+                            kernel_initializer=tf.initializers.zeros()),
+        # Shape => [batch, out_steps, features]
+        tf.keras.layers.Reshape([wide_window.label_width, num_features])
+    ])
+        return multi_linear_model
+
+    def multi_step_convolutional_model(self, wide_window, num_features):
+        multi_conv_model = tf.keras.Sequential([
+        # Shape [batch, time, features] => [batch, CONV_WIDTH, features]
+        tf.keras.layers.Lambda(lambda x: x[:, -CONV_WIDTH:, :]),
+        # Shape => [batch, 1, conv_units]
+        tf.keras.layers.Conv1D(256, activation='relu', kernel_size=(CONV_WIDTH)),
+        # Shape => [batch, 1,  out_steps*features]
+        tf.keras.layers.Dense(wide_window.OUT_STEPS*num_features,
+                            kernel_initializer=tf.initializers.zeros()),
+        # Shape => [batch, out_steps, features]
+        tf.keras.layers.Reshape([wide_window.OUT_STEPS, num_features])
+    ])
 
 
         

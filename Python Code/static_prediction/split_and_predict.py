@@ -1,4 +1,3 @@
-from model import retrain_model
 from tensorflow.keras.models import Sequential, load_model
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
@@ -9,6 +8,7 @@ import tensorflow as tf
 from .baseline import Baseline
 from .models import Models
 import matplotlib.pyplot as plt
+from .autoregressive_model.feedback import FeedBack
 
 class Predictor:
     def __init__(self, df, config):
@@ -55,35 +55,54 @@ class Predictor:
         # baseline_model.create_baseline_model()
 
         if self.config['models']['linear']:
-            linear_model = Models(column_indices, wide_window, num_features)
+            linear_model = Models(column_indices, wide_window, num_features, self.config)
             linear_model_val_performance, linear_performance = linear_model.performance_evaluation('linear', wide_window)
             self.mae_val.extend([linear_model_val_performance])
             self.mae_test.extend([linear_performance])
         if self.config['models']['densed']:
-            densed_model = Models(column_indices, wide_window, num_features)
+            densed_model = Models(column_indices, wide_window, num_features, self.config)
             densed_model_val_performance, densed_performance = densed_model.performance_evaluation('densed', wide_window)
             self.mae_val.extend([densed_model_val_performance])
             self.mae_test.extend([ densed_performance])
         if self.config['models']['convolutional']:
-            convolutional_model = Models(column_indices, wide_window, num_features)
+            convolutional_model = Models(column_indices, wide_window, num_features, self.config)
             convo_model_val_performance, convo_step_model_performance = convolutional_model.performance_evaluation('convolutional_model', wide_window)
             self.mae_val.extend([convo_model_val_performance])
             self.mae_test.extend([convo_step_model_performance])
         if self.config['models']['lstm']:
-            lstm_model = Models(column_indices, wide_window, num_features)
+            lstm_model = Models(column_indices, wide_window, num_features, self.config)
             lstm_model_val_performance, lstm_step_model_performance = lstm_model.performance_evaluation('lstm_model', wide_window)
             self.mae_val.extend([lstm_model_val_performance])
             self.mae_test.extend([lstm_step_model_performance])
         if self.config['models']['multi_step_linear_single_shot']:
-            single_shot_linear_model = Models(column_indices, wide_window, num_features)
+            single_shot_linear_model = Models(column_indices, wide_window, num_features, self.config)
             single_shot_linear_model_val_performance, single_shot_linear_model_test_performance = single_shot_linear_model.performance_evaluation('single_shot_linear', wide_window)
             self.mae_val.extend([single_shot_linear_model_val_performance])
             self.mae_test.extend([single_shot_linear_model_test_performance])
         if self.config['models']['multi_step_densed_model']:
-            multi_step_densed_model = Models(column_indices, wide_window, num_features)
+            multi_step_densed_model = Models(column_indices, wide_window, num_features, self.config)
             multi_step_densed_model_val_performance, multi_step_densed_model_test_performance = multi_step_densed_model.performance_evaluation('multi_step_densed', wide_window)
             self.mae_val.extend([multi_step_densed_model_val_performance])
-            self.mae_test.extend([multi_step_densed_model_test_performance])    
+            self.mae_test.extend([multi_step_densed_model_test_performance])
+
+        if self.config['models']['multi_step_convolutional_model']:
+            multi_step_conv_model = Models(column_indices, wide_window, num_features, self.config)
+            multi_step_conv_model_val_performance, multi_step_conv_model_test_performance = multi_step_conv_model.performance_evaluation('multi_step_conv', wide_window)
+            self.mae_val.extend([multi_step_conv_model_val_performance])
+            self.mae_test.extend([multi_step_conv_model_test_performance])        
+
+        if self.config['models']['multi_step_lstm_model']:
+            multi_step_lstm_model = Models(column_indices, wide_window, num_features, self.config)
+            multi_step_lstm_model_val_performance, multi_step_lstm_model_test_performance = multi_step_lstm_model.performance_evaluation('multi_step_lstm', wide_window)
+            self.mae_val.extend([multi_step_lstm_model_val_performance])
+            self.mae_test.extend([multi_step_lstm_model_test_performance])
+
+        # if self.config['models']['autoregressive_lstm']:
+        #     autoregressive_feedback_lstm = Models(column_indices, wide_window, num_features, self.config)
+        #     multi_step_lstm_ar_val_performance, multi_step_lstm_ar_test_performance = autoregressive_feedback_lstm.performance_evaluation('autoregressive_lstm', wide_window)
+        #     self.mae_val.extend([multi_step_lstm_ar_val_performance])
+        #     self.mae_test.extend([multi_step_lstm_ar_test_performance])
+
         self.plot_mae_comparison()
     
     def plot_mae_comparison(self):

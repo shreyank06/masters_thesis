@@ -2,6 +2,10 @@ import tensorflow as tf
 from .baseline import Baseline
 from .autoregressive_model.feedback import FeedBack
 import os
+import sys
+tf.config.run_functions_eagerly(True)
+from kerastuner.tuners import RandomSearch
+from kerastuner.engine.hyperparameters import HyperParameters
 
 class Models:
     MAX_EPOCHS = 20
@@ -24,7 +28,7 @@ class Models:
 
         self.window_size.plot(baseline)
 
-    def compile_and_fit(self, model, model_type, patience=2):
+    def compile_and_fit(self, model, model_type, patience=5):
         early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss',
                                                            patience=patience,
                                                            mode='min')
@@ -46,50 +50,75 @@ class Models:
         return history
 
     def performance_evaluation(self, model_type, wide_window):
-
         val_performance = {}
         performance = {}
         model = None
         model_filename = f"{model_type}.h5"
         model_path = os.path.join("trained_models", model_filename)
 
-        if os.path.exists(model_path) and self.config['retrain_model']:
+        if os.path.exists(model_path):
             # If the model file already exists, load it
             model = tf.keras.models.load_model(model_path)
             if self.config['retrain_model']:
-                history = self.compile_and_fit(model, model_type)
-            self.window_size.plot(dataset = 'train', model = model)
-            val_performance[model_type] = model.evaluate(self.window_size.val)
-            performance[model_type] = model.evaluate(self.window_size.test, verbose=0)
+                if model.layers[-1].output_shape[1] == self.window_size.train.element_spec[0].shape[1]:
+                    history = self.compile_and_fit(model, model_type)
+                    model = tf.keras.models.load_model(model_path)
+                    self.window_size.plot(dataset='train', model=model)
+                    #val_performance[model_type] = model.evaluate(self.window_size.val)
+                    performance[model_type] = model.evaluate(self.window_size.test, verbose=0)
+
+                else:
+                    print('Model is not trained for desired output shape, creating new model and training again')
+                    # Continue with creating a new model
+                    model = self.create_model(model_type, wide_window)
+                    history = self.compile_and_fit(model, model_type)
+                    model.save(model_path)
+                    self.performance_evaluation(model_type, wide_window)
+            else:
+                if model.layers[-1].output_shape[1] == self.window_size.train.element_spec[0].shape[1]:
+                    model = tf.keras.models.load_model(model_path)
+                    self.window_size.plot(dataset='train', model=model)
+                    #val_performance[model_type] = model.evaluate(self.window_size.val)
+                    performance[model_type] = model.evaluate(self.window_size.test, verbose=0)
+                else:
+                    print('Model is not trained for desired output shape, creating new model and training again')
+                    # Continue with creating a new model
+                    model = self.create_model(model_type, wide_window)
+                    history = self.compile_and_fit(model, model_type)
+                    model.save(model_path)
+                    self.performance_evaluation(model_type, wide_window)
         else:
             # Otherwise, create a new model based on the model type
-            if model_type =='linear':
-                model = self.linear_model()
-            elif model_type == 'densed':
-                model = self.densed_model()
-            elif model_type == 'convolutional_model':
-                model = self.convolutional_model(wide_window)
-            elif model_type == 'lstm_model':
-                model = self.lstm_model()
-            elif model_type == 'single_shot_linear':
-                model = self.multi_step_linear_single_shot(wide_window, self.num_features)
-            elif model_type == 'multi_step_densed':
-                model = self.multi_step_densed_model(wide_window, self.num_features)
-            elif model_type == 'multi_step_conv':
-                model = self.multi_step_convolutional_model(wide_window, self.num_features)
-            elif model_type == 'multi_step_lstm':
-                model = self.multi_step_lstm_model(wide_window, self.num_features)
-            elif model_type == 'autoregressive_lstm':
-                model = self.autoregressive_lstm(wide_window, self.num_features)
-
-            history = self.compile_and_fit(model, model_type)
-            val_performance[model_type] = model.evaluate(self.window_size.val)
+            print("The model doesnt exist, creating new model")
+            model = self.create_model(model_type, wide_window)
+            best_model = self.hyperparameter_tuning(lambda hp: self.create_model(model_type, wide_window, hp=hp), model_type)
+            history = self.compile_and_fit(best_model, model_type)
+            #val_performance[model_type] = model.evaluate(self.window_size.val)
             performance[model_type] = model.evaluate(self.window_size.test, verbose=0)
-            self.window_size.plot(dataset = 'train', model = model)
-            # self.window_size.plot(dataset = 'example', model = model)
-            # self.window_size.plot(dataset = 'test', model = model)
-
-        return val_performance, performance
+            self.window_size.plot(dataset='train', model=model)
+        #return val_performance, performance
+        return 0, performance
+    
+    def create_model(self, model_type, wide_window, hp = None):
+        if model_type == 'linear':
+            model = self.linear_model()
+        elif model_type == 'densed':
+            model = self.densed_model()
+        elif model_type == 'convolutional_model':
+            model = self.convolutional_model(wide_window, self.num_features)
+        elif model_type == 'lstm_model':
+            model = self.lstm_model()
+        elif model_type == 'single_shot_linear':
+            model = self.multi_step_linear_single_shot(wide_window, self.num_features)
+        elif model_type == 'multi_step_densed':
+            model = self.multi_step_densed_model(wide_window, self.num_features)
+        elif model_type == 'multi_step_conv':
+            model = self.multi_step_convolutional_model(wide_window, self.num_features)
+        elif model_type == 'multi_step_lstm':
+            model = self.multi_step_lstm_model(wide_window, self.num_features)
+        elif model_type == 'autoregressive_lstm':
+            model = self.autoregressive_lstm(wide_window, self.num_features)
+        return model
     
     def linear_model(self):
         linear = tf.keras.Sequential([
@@ -122,14 +151,14 @@ class Models:
 
         return multi_step_dense_model
     
-    def convolutional_model(self, wide_conv_window):
+    def convolutional_model(self, wide_conv_window, num_features):
         conv_model = tf.keras.Sequential([
             tf.keras.layers.Conv1D(filters=32,
                                 kernel_size=(wide_conv_window.input_width,),
                                 activation='relu'),
             tf.keras.layers.Dense(units=32, activation='relu'),
             tf.keras.layers.Dense(units=24),  # Adjust units to match the desired output shape
-            tf.keras.layers.Reshape([24, 1])  # Reshape to (batch_size, 24, 1)
+            tf.keras.layers.Reshape([wide_conv_window.label_width, num_features])  # Reshape to (batch_size, 24, 1)
         ])
         return conv_model
     
@@ -188,3 +217,23 @@ class Models:
         autoregressive_feedback_lstm = FeedBack(units=32, out_steps=wide_window.input_width, num_features=num_features)
         return autoregressive_feedback_lstm
 
+    def hyperparameter_tuning(self, model_fn, model_type):
+        tuner = RandomSearch(
+            model_fn,
+            objective='val_loss',
+            max_trials=5,
+            executions_per_trial=1,
+            directory='hyperparameter_tuning',
+            project_name=f'{model_type}')
+
+        tuner.search(self.window_size.train,
+                    validation_data=self.window_size.val,
+                    epochs=self.MAX_EPOCHS)
+
+        best_model = tuner.get_best_models(num_models=1)[0]
+        
+        best_model.compile(loss=tf.keras.losses.MeanSquaredError(),
+                        optimizer=tf.keras.optimizers.Adam(),
+                        metrics=[tf.keras.metrics.MeanAbsoluteError()])
+
+        return best_model

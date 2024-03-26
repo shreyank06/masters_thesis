@@ -46,11 +46,7 @@ class Predictor:
         
         pca = PCA(self.train_df, 3)
         self.pca_train_data = pca.fit_transform()
-
-        pca = PCA(self.val_df, 3)
         self.pca_val_data = pca.fit_transform()
-
-        pca = PCA(self.test_df, 3)
         self.pca_test_data = pca.fit_transform()
 
         # Convert transformed data back to DataFrame

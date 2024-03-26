@@ -18,13 +18,18 @@ def main(start_time, end_time, registration_number, ops_per_second):
         collector = CsvCollector(config['start_time'], config['end_time'], config, registration_number, ops_per_second)
         collector.collect_csv_data()
 
-    df = pd.read_csv("data/smf_1000_1_set_1.csv")  # Load your DataFrame here
+    df = pd.read_csv("data/smf_1000_1_set_1.csv")
+      # Load your DataFrame here
     df_2 = pd.read_csv("data/smf_1000_5_set.csv")
-    
-    #df = pd.concat([df, df_2])
-    
 
-    predictor = Predictor(df.apply(pd.to_numeric, errors='coerce'), config)
+    # corr_matrix=df.corr()
+    # corr = corr_matrix["phoenix_memory_used_cm_sessionP_smf"].sort_values(ascending=False)
+    
+    # print(corr_matrix)
+
+    # df = pd.concat([df_2, df])
+
+    predictor = Predictor(df_2.apply(pd.to_numeric, errors='coerce'), config)
     predictor.split()
     #predictor.predict_on_test_data()  # Example usage of predict_on_test_data method
 

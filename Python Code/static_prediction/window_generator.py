@@ -53,7 +53,7 @@ class WindowGenerator():
       # manually. This way the `tf.data.Datasets` are easier to inspect.
       inputs.set_shape([None, self.input_width, None])
       labels.set_shape([None, self.label_width, None])
-
+      print(inputs, labels)
       return inputs, labels
   
   def plot(self, dataset='train', model=None, plot_col='phoenix_memory_used_cm_sessionP_smf', max_subplots=3):
@@ -115,7 +115,7 @@ class WindowGenerator():
         batch_size=32,)
 
     ds = ds.map(self.split_window)
-
+    #print(2, ds)
     return ds
   
   @property

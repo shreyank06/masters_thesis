@@ -9,6 +9,10 @@ from .baseline import Baseline
 from .models import Models
 import matplotlib.pyplot as plt
 from .autoregressive_model.feedback import FeedBack
+import sys
+import tensorflow_transform as tft
+tf.compat.v1.disable_eager_execution()
+from .pca import PCA
 
 class Predictor:
     def __init__(self, df, config):
@@ -26,6 +30,9 @@ class Predictor:
         self.mae_val = []
         self.mae_test=[]
         self.data = None
+        self.pca_train_data = None
+        self.pca_val_data = None
+        self.pca_test_data = None
 
     def split(self):
         date_time = pd.to_datetime(self.df.pop('timestamp'), format='%Y-%m-%d %H:%M:%S')
@@ -36,6 +43,24 @@ class Predictor:
         self.train_df = self.scaled_df[0:int(n*0.7)]
         self.val_df = self.scaled_df[int(n*0.7):int(n*0.9)]
         self.test_df = self.scaled_df[int(n*0.9):]
+        
+        pca = PCA(self.train_df, 3)
+        self.pca_train_data = pca.fit_transform()
+
+        pca = PCA(self.val_df, 3)
+        self.pca_val_data = pca.fit_transform()
+
+        pca = PCA(self.test_df, 3)
+        self.pca_test_data = pca.fit_transform()
+
+        # Convert transformed data back to DataFrame
+        transformed_df = pd.DataFrame(transformed_data, columns=['PCA Component 1', 'PCA Component 2', 'PCA Component 3'], index=self.train_df.index)
+
+       # Print the transformed DataFrame
+        print("Transformed Data:")
+        print(transformed_df)
+
+
         # self.train_df.to_csv('train_data.csv', index=False)
         # self.val_df.to_csv('val_data.csv', index = False)
 
@@ -85,11 +110,11 @@ class Predictor:
         #     #self.mae_val.extend([multi_step_densed_model_val_performance])
         #     self.mae_test.extend([multi_step_densed_model_test_performance])
 
-        # if self.config['models']['multi_step_convolutional_model']:
-        #     multi_step_conv_model = Models(column_indices, wide_window, num_features, self.config)
-        #     multi_step_conv_model_val_performance, multi_step_conv_model_test_performance = multi_step_conv_model.performance_evaluation('multi_step_conv', wide_window)
-        #     #self.mae_val.extend([multi_step_conv_model_val_performance])
-        #     self.mae_test.extend([multi_step_conv_model_test_performance])        
+        if self.config['models']['multi_step_convolutional_model']:
+            multi_step_conv_model = Models(column_indices, wide_window, num_features, self.config)
+            multi_step_conv_model_val_performance, multi_step_conv_model_test_performance = multi_step_conv_model.performance_evaluation('multi_step_conv', wide_window)
+            #self.mae_val.extend([multi_step_conv_model_val_performance])
+            self.mae_test.extend([multi_step_conv_model_test_performance])        
 
         if self.config['models']['multi_step_lstm_model']:
             multi_step_lstm_model = Models(column_indices, wide_window, num_features, self.config)

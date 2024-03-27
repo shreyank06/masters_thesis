@@ -3,12 +3,12 @@ from .baseline import Baseline
 from .autoregressive_model.feedback import FeedBack
 import os
 import sys
-tf.config.run_functions_eagerly(True)
+
 from kerastuner.tuners import RandomSearch
 from kerastuner.engine.hyperparameters import HyperParameters
 import pandas as pd
 import matplotlib.pyplot as plt
-#
+#tf.config.run_functions_eagerly(True)
 
 class Models:
     MAX_EPOCHS = 50
@@ -19,7 +19,7 @@ class Models:
         self.num_features = num_features
         self.config = config
         self.hp = HyperParameters()
-        self.pca_transformer = PCATransformer(n_components=4)
+        
         
     def create_baseline_model(self):
         baseline = Baseline(label_index=self.column_indices['phoenix_memory_used_cm_sessionP_smf'])
@@ -177,16 +177,14 @@ class Models:
         
         early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss',
                                                            patience=patience,
-                                                           mode='min')
+                                                           mode='min',
+                                                           restore_best_weights=True)
         
         hp_learning_rate = self.hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4])
         
         model.compile(loss=tf.keras.losses.MeanSquaredError(),
-                      optimizer=tf.keras.optimizers.Adam(learning_rate=hp_learning_rate),
+                      optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=hp_learning_rate),
                       metrics=[tf.keras.metrics.MeanAbsoluteError()])
-
-        self.window_size.train
-        sys.exit()
 
         history = model.fit(self.window_size.train, epochs=self.MAX_EPOCHS,
                             validation_data=self.window_size.val,

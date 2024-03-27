@@ -105,6 +105,7 @@ class WindowGenerator():
       plt.show()
     
   def make_dataset(self, data):
+    data = np.real(data)
     data = np.array(data, dtype=np.float32)
     ds = tf.keras.utils.timeseries_dataset_from_array(
         data=data,

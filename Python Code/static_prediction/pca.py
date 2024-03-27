@@ -1,14 +1,15 @@
 import numpy as np
 import tensorflow as tf
+
 #https://towardsdatascience.com/all-you-need-to-know-about-pca-technique-in-machine-learning-443b0c2be9a1
+#https://medium.com/@ansjin/dimensionality-reduction-using-pca-on-multivariate-timeseries-data-b5cc07238dc4
 
 class PCA:
-    def __init__(self, df, n_components):
-        self.df = df
+    def __init__(self, n_components):
         self.n_components = n_components
 
-    def fit_transform(self):
-        train_tensor = tf.constant(self.df.values, dtype=tf.float32)
+    def fit_transform(self, df):
+        train_tensor = tf.constant(df.values, dtype=tf.float32)
 
         # Compute covariance matrix
         cov_matrix = tf.matmul(tf.transpose(train_tensor), train_tensor)
@@ -37,7 +38,7 @@ class PCA:
                 print(f"Principal Component {i+1}: {variance_ratio[i]}")
 
         # Transform the data
-        transformed_data = np.dot(self.df.values, pca_matrix_val)
+        transformed_data = np.dot(df.values, pca_matrix_val)
 
         return transformed_data
 

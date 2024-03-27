@@ -44,23 +44,31 @@ class Predictor:
         self.val_df = self.scaled_df[int(n*0.7):int(n*0.9)]
         self.test_df = self.scaled_df[int(n*0.9):]
         
-        pca = PCA(self.train_df, 3)
-        self.pca_train_data = pca.fit_transform()
-        self.pca_val_data = pca.fit_transform()
-        self.pca_test_data = pca.fit_transform()
+        pca = PCA(2)
+        self.pca_train_data = pca.fit_transform(self.train_df)
+        self.pca_val_data = pca.fit_transform(self.val_df)
+        self.pca_test_data = pca.fit_transform(self.test_df)
 
         # Convert transformed data back to DataFrame
-        transformed_df = pd.DataFrame(transformed_data, columns=['PCA Component 1', 'PCA Component 2', 'PCA Component 3'], index=self.train_df.index)
+        pca_train_data = pd.DataFrame(self.pca_train_data, columns=['PCA Component 1', 'PCA Component 2'], index=self.train_df.index)
+        pca_train_data['phoenix_memory_used_cm_sessionP_smf'] = self.train_df['phoenix_memory_used_cm_sessionP_smf']
 
-       # Print the transformed DataFrame
-        print("Transformed Data:")
-        print(transformed_df)
+        pca_val_data = pd.DataFrame(self.pca_val_data, columns=['PCA Component 1', 'PCA Component 2'], index=self.val_df.index)
+        pca_val_data['phoenix_memory_used_cm_sessionP_smf'] = self.val_df['phoenix_memory_used_cm_sessionP_smf']
+
+        pca_test_data = pd.DataFrame(self.pca_test_data, columns=['PCA Component 1', 'PCA Component 2'], index=self.test_df.index)
+        pca_test_data['phoenix_memory_used_cm_sessionP_smf'] = self.test_df['phoenix_memory_used_cm_sessionP_smf']
+
+    #    # Print the transformed DataFrame
+    #     print("Transformed Data:")
+    #     print(pca_train_data)
+
 
 
         # self.train_df.to_csv('train_data.csv', index=False)
         # self.val_df.to_csv('val_data.csv', index = False)
 
-        self.predict(column_indices)
+        self.predict(column_indices)#, pca_train_data, pca_val_data, pca_test_data)
         #self.multi_step_models(self)
 
 

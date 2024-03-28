@@ -53,7 +53,7 @@ class WindowGenerator():
       # manually. This way the `tf.data.Datasets` are easier to inspect.
       inputs.set_shape([None, self.input_width, None])
       labels.set_shape([None, self.label_width, None])
-      print(inputs, labels)
+
       return inputs, labels
   
   def plot(self, dataset='train', model=None, plot_col='phoenix_memory_used_cm_sessionP_smf', max_subplots=3):
@@ -105,7 +105,6 @@ class WindowGenerator():
       plt.show()
     
   def make_dataset(self, data):
-    data = np.real(data)
     data = np.array(data, dtype=np.float32)
     ds = tf.keras.utils.timeseries_dataset_from_array(
         data=data,
@@ -116,7 +115,7 @@ class WindowGenerator():
         batch_size=32,)
 
     ds = ds.map(self.split_window)
-    #print(2, ds)
+
     return ds
   
   @property
@@ -141,6 +140,4 @@ class WindowGenerator():
       # And cache it for next time
       self._example = result
     return result
-
-      
 

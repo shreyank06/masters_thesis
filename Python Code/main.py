@@ -29,7 +29,7 @@ def main(start_time, end_time, registration_number, ops_per_second):
 
     # df = pd.concat([df_2, df])
 
-    predictor = Predictor(df_2.apply(pd.to_numeric, errors='coerce'), config)
+    predictor = Predictor(df.apply(pd.to_numeric, errors='coerce'), config)
     predictor.split()
     #predictor.predict_on_test_data()  # Example usage of predict_on_test_data method
 

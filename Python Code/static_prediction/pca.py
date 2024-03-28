@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+import pandas as pd
 
 #https://towardsdatascience.com/all-you-need-to-know-about-pca-technique-in-machine-learning-443b0c2be9a1
 #https://medium.com/@ansjin/dimensionality-reduction-using-pca-on-multivariate-timeseries-data-b5cc07238dc4
@@ -7,6 +8,9 @@ import tensorflow as tf
 class PCA:
     def __init__(self, n_components):
         self.n_components = n_components
+        self.pca_train_data = None
+        self.pca_val_data = None
+        self.pca_test_data = None
 
     def fit_transform(self, df):
         train_tensor = tf.constant(df.values, dtype=tf.float32)
@@ -26,21 +30,31 @@ class PCA:
         sorted_eigenvectors = tf.gather(eigenvectors, eigenvalues_indices, axis=1)
 
         # Select top k eigenvectors corresponding to the top k eigenvalues
-        pca_matrix = tf.slice(sorted_eigenvectors, [0, 0], [train_tensor.shape[1], self.n_components])
+        pca_matrix = sorted_eigenvectors[:, :self.n_components]
 
-        with tf.compat.v1.Session() as sess:
-            pca_matrix_val = sess.run(pca_matrix)
-            total_variance = sess.run(tf.reduce_sum(sorted_eigenvalues))
-            variance_ratio = sess.run(sorted_eigenvalues / total_variance)
-
-            print("Variance captured by each principal component:")
-            for i in range(self.n_components):
-                print(f"Principal Component {i+1}: {variance_ratio[i]}")
+        pca_matrix_val = pca_matrix.numpy()  # Convert to NumPy array
 
         # Transform the data
         transformed_data = np.dot(df.values, pca_matrix_val)
 
         return transformed_data
+
+    def convert_to_pca(self, train_df, val_df, test_df):
+        self.pca_train_data = self.fit_transform(train_df)
+        self.pca_val_data = self.fit_transform(val_df)
+        self.pca_test_data = self.fit_transform(test_df)
+
+        # Convert transformed data back to DataFrame
+        self.pca_train_data = pd.DataFrame(self.pca_train_data, columns=['PCA Component 1', 'PCA Component 2'], index=train_df.index)
+        self.pca_train_data['phoenix_memory_used_cm_sessionP_smf'] = train_df['phoenix_memory_used_cm_sessionP_smf']
+        
+        self.pca_val_data = pd.DataFrame(self.pca_val_data, columns=['PCA Component 1', 'PCA Component 2'], index=val_df.index)
+        self.pca_val_data['phoenix_memory_used_cm_sessionP_smf'] = val_df['phoenix_memory_used_cm_sessionP_smf']
+
+        self.pca_test_data = pd.DataFrame(self.pca_test_data, columns=['PCA Component 1', 'PCA Component 2'], index=test_df.index)
+        self.pca_test_data['phoenix_memory_used_cm_sessionP_smf'] = test_df['phoenix_memory_used_cm_sessionP_smf']
+
+        return self.pca_train_data, self.pca_val_data, self.pca_test_data
 
     
     # def print_mapping():

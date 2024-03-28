@@ -11,8 +11,9 @@ import matplotlib.pyplot as plt
 from .autoregressive_model.feedback import FeedBack
 import sys
 import tensorflow_transform as tft
-tf.compat.v1.disable_eager_execution()
 from .pca import PCA
+#tf.compat.v1.disable_eager_execution()
+
 
 class Predictor:
     def __init__(self, df, config):
@@ -44,41 +45,24 @@ class Predictor:
         self.val_df = self.scaled_df[int(n*0.7):int(n*0.9)]
         self.test_df = self.scaled_df[int(n*0.9):]
         
-        pca = PCA(2)
-        self.pca_train_data = pca.fit_transform(self.train_df)
-        self.pca_val_data = pca.fit_transform(self.val_df)
-        self.pca_test_data = pca.fit_transform(self.test_df)
-
-        # Convert transformed data back to DataFrame
-        pca_train_data = pd.DataFrame(self.pca_train_data, columns=['PCA Component 1', 'PCA Component 2'], index=self.train_df.index)
-        pca_train_data['phoenix_memory_used_cm_sessionP_smf'] = self.train_df['phoenix_memory_used_cm_sessionP_smf']
-
-        pca_val_data = pd.DataFrame(self.pca_val_data, columns=['PCA Component 1', 'PCA Component 2'], index=self.val_df.index)
-        pca_val_data['phoenix_memory_used_cm_sessionP_smf'] = self.val_df['phoenix_memory_used_cm_sessionP_smf']
-
-        pca_test_data = pd.DataFrame(self.pca_test_data, columns=['PCA Component 1', 'PCA Component 2'], index=self.test_df.index)
-        pca_test_data['phoenix_memory_used_cm_sessionP_smf'] = self.test_df['phoenix_memory_used_cm_sessionP_smf']
-
-    #    # Print the transformed DataFrame
-    #     print("Transformed Data:")
-    #     print(pca_train_data)
-
-
+        if self.config['convert_to_pca']:
+            pca = PCA(2)
+            self.train_df, self.val_df, self.test_df = pca.convert_to_pca(self.train_df, self.val_df, self.test_df)
 
         # self.train_df.to_csv('train_data.csv', index=False)
         # self.val_df.to_csv('val_data.csv', index = False)
 
-        self.predict(column_indices)#, pca_train_data, pca_val_data, pca_test_data)
-        #self.multi_step_models(self)
-
+        self.predict(column_indices)
 
     def predict(self, column_indices):
 
-        num_features = self.scaled_df.shape[1]
-        
+        num_features = self.train_df.shape[1]
+        #print(pca_val_data)
+       
         wide_window = WindowGenerator(
                 input_width=self.config['window_width']['input_width'], label_width=self.config['window_width']['label_width'], shift=self.config['window_width']['shift'],
-                train_df=self.train_df, val_df=self.val_df, test_df=self.test_df, label_columns=[self.config['label_columns']+self.config['component']])
+                train_df=self.train_df, val_df=self.train_df, test_df=self.test_df, label_columns=[self.config['label_columns']+self.config['component']])
+
         
         # baseline_model=Models(column_indices, wide_window)
         # baseline_model.create_baseline_model()

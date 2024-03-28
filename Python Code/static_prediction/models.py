@@ -8,10 +8,11 @@ from kerastuner.tuners import RandomSearch
 from kerastuner.engine.hyperparameters import HyperParameters
 import pandas as pd
 import matplotlib.pyplot as plt
-#tf.config.run_functions_eagerly(True)
+#tf.compat.v1.experimental.output_all_intermediates(True)
+
 
 class Models:
-    MAX_EPOCHS = 50
+    MAX_EPOCHS = 300
 
     def __init__(self, column_indices, window_size, num_features, config):
         self.column_indices = column_indices
@@ -159,7 +160,7 @@ class Models:
 
         return best_model
 
-    def compile_and_fit(self, model, model_type, patience=10):
+    def compile_and_fit(self, model, model_type, patience=250):
         # tuner = RandomSearch(
         #     model,
         #     objective='val_loss',
@@ -177,13 +178,12 @@ class Models:
         
         early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss',
                                                            patience=patience,
-                                                           mode='min',
-                                                           restore_best_weights=True)
+                                                           mode='min')
         
         hp_learning_rate = self.hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4])
         
         model.compile(loss=tf.keras.losses.MeanSquaredError(),
-                      optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=hp_learning_rate),
+                      optimizer=tf.keras.optimizers.legacy.Adam(),
                       metrics=[tf.keras.metrics.MeanAbsoluteError()])
 
         history = model.fit(self.window_size.train, epochs=self.MAX_EPOCHS,
@@ -236,9 +236,8 @@ class Models:
                     history = self.compile_and_fit(model, model_type)
                     model.save(model_path)
                     self.performance_evaluation(model_type, wide_window)
-            # history = self.compile_and_fit(model, model_type)
-            # history_df = pd.DataFrame(history.history)
-            # history_df.loc[:, ['loss', 'val_loss']].plot()
+            history_df = pd.DataFrame(history.history)
+            history_df.loc[:, ['loss', 'val_loss']].plot()
         else:
             # Otherwise, create a new model based on the model type
             print("The model doesnt exist, creating new model")
@@ -251,7 +250,7 @@ class Models:
             plt.show()
 
             #val_performance[model_type] = model.evaluate(self.window_size.val)
-            performance[model_type] = model.evaluate(self.window_size.test, verbose=0)
+            #performance[model_type] = model.evaluate(self.window_size.test, verbose=0)
             self.window_size.plot(dataset='train', model=model)
         #return val_performance, performance
         return 0, performance

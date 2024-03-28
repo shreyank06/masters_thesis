@@ -19,7 +19,7 @@
     "end_time": "2024-01-29T11:10:30",
     "step": "1s",
     "component": "smf",
-    "retrain_model":true,
+    "retrain_model":false,
     "get_csv": false,
     "convert_json_to_features":false,
 
@@ -41,6 +41,7 @@
         "multi_step_convolutional_model":false,
         "multi_step_lstm_model": true,
         "autoregressive_lstm": false
-    }
+    },
+    "convert_to_pca":true
 }
 

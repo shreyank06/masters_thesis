@@ -1,2 +1,8 @@
 scalecast
 tensorflow-transform
+plotly
+sklearn-learn
+matplotlib
+pandas
+tensorflow
+keras-tuner

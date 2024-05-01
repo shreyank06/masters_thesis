@@ -1,7 +1,7 @@
 def calculate_amf_memory(ues):
     amf_global_mem = ues * 0.000352 + 0.0377
     amf_packet_mem = (0.000939 + 0.0199) * ues
-    amf_session_mem = (0.000957 + 0.00138) * ues
+    amf_session_mem = ((0.000807 + 0.00231) * ues) + 0.00728
     amf_transaction_mem = ues * 0.000168 + 0.000592
     return amf_global_mem, amf_packet_mem, amf_session_mem, amf_transaction_mem
 

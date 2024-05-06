@@ -1,6 +1,6 @@
 {
     "PROMETHEUS_URL": "http://192.168.254.130:9090/prom/api/v1/query_range",
-    "queries": [
+    "queries_1": [
         "http_client_request_count",
         "http_server_request_count",
         "http_client_response_count",
@@ -10,17 +10,18 @@
         "phoenix_memory_cm_wasted_bytes",
         "open5G_bt_subscriber_count"
     ],
-    "queries_1": [
+    "queries": [
         "phoenix_memory_cm_allocated_bytes",
-        "phoenix_memory_cm_wasted_bytes",
+        "phoenix_memory_cm_chunksize_bytes",
+        "phoenix_memory_cm_chunk_count_total",
         "open5G_bt_subscriber_count"
     ],
     "start_time": "2024-01-29T11:10:00",
     "end_time": "2024-01-29T11:10:30",
     "step": "1s",
-    "component": "smf",
+    "component": "udm",
     "retrain_model":false,
-    "get_csv": false,
+    "get_csv": true,
     "convert_json_to_features":false,
 
     "window_width": {
@@ -38,10 +39,11 @@
         "lstm":true,
         "multi_step_linear_single_shot": true,
         "multi_step_densed_model": true,
-        "multi_step_convolutional_model":false,
+        "multi_step_convolutional_model":true,
         "multi_step_lstm_model": true,
         "autoregressive_lstm": false
     },
-    "convert_to_pca":true
+    "convert_to_pca":true,
+    "check_corelation": false
 }
 

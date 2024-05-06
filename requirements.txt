@@ -4,3 +4,9 @@ tensorflow
 scikit-learn
 Jinja2
 Flask
+plotly
+sklearn-learn
+matplotlib
+pandas
+tensorflow
+keras-tuner

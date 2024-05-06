@@ -1,2 +1,6 @@
 scalecast
 tensorflow-transform
+tensorflow
+scikit-learn
+Jinja2
+Flask

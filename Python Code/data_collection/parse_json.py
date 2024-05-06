@@ -103,6 +103,12 @@ def convert_to_dataframe(config, data):
             if 'allocated' in str(metric):
                 memtype = metric["metric"].get("memtype", "unknown")
                 column_name = f'phoenix_memory_allocated_{memtype}_{component}'
+            if "chunksize" in str(metric):
+                memtype = metric["metric"].get("memtype", "unknown")
+                column_name = f'phoenix_memory_chunksize_{memtype}_{component}'
+            if "chunk_count_total" in str(metric):
+                memtype = metric["metric"].get("memtype", "unknown")
+                column_name = f'phoenix_memory_chunk_count_{memtype}_{component}'
             if'wasted' in str(metric):
                 memtype = metric["metric"].get("memtype", "unknown")
                 column_name = f'phoenix_memory_wasted_{memtype}_{component}'
@@ -125,11 +131,33 @@ def convert_to_dataframe(config, data):
             merged_df = df
 
     merged_df = merged_df.apply(pd.to_numeric, errors='ignore')
-    merged_df = used_memory(merged_df, component)
+    merged_df = multiply_columns(merged_df, component)
+    #merged_df = used_memory(merged_df, component)
     #merged_df = memory_per_ue(merged_df, component)
     #merged_df = process_memory_to_mb(merged_df, component)
 
     return merged_df
+
+def multiply_columns(df, component):
+    # Find all columns with 'phoenix_memory_chunksize_' or 'phoenix_memory_chunk_count_' prefix
+    columns_to_multiply = [col for col in df.columns if col.startswith(f'phoenix_memory_chunksize_') or col.startswith(f'phoenix_memory_chunk_count_')]
+    
+    # Print the columns present in the dataframe before multiplication
+    for col in columns_to_multiply:
+        memtype = col.split('_')[-2]  # Extract memtype from column name
+        matching_columns = [c for c in df.columns if memtype in c and (c.startswith(f'phoenix_memory_chunksize_') or c.startswith(f'phoenix_memory_chunk_count_'))]  # Find all columns with the same memtype
+        
+        if len(matching_columns) > 1:
+            total_column_name = f'total_allocated_memory_{memtype}_{component}'
+            
+            # Check if all matching columns exist in the dataframe
+            if all(col in df.columns for col in matching_columns):
+                df[total_column_name] = df[matching_columns].prod(axis=1)/1048576  # Multiply columns with the same memtype and then divide by 1048576
+                df.drop(columns=matching_columns, inplace=True)  # Remove original columns
+            else:
+                print(f"Error: Columns {matching_columns} do not exist in the dataframe.")
+        
+    return df
 
 def fetch_and_convert_data(config, query_type, start_time, end_time, step):
     data = fetch_prometheus_data(config, start_time, end_time, step)

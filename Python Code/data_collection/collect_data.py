@@ -46,7 +46,21 @@ class CsvCollector:
 
         # Save CSV file in 'data' folder
         self.df.to_csv(os.path.join('data', csv_filename), index=True)
-        # self.visualize_data(self.df, 'data', '')  # Assuming this line is a visualization function call
+        
+        # Calculate Per UE session mempool allocated
+        per_ue_session_mempool_allocated = (self.df['phoenix_memory_allocated_cm_globalP_amf'].sum()) / self.df['subscriber_count_Connected'].sum()
+
+        # Calculate Per UE global mempool unallocated
+        last_total_allocated_memory_globalP_amf = self.df['total_allocated_memory_globalP_amf'].iloc[-1]
+        per_ue_global_mempool_unallocated = (last_total_allocated_memory_globalP_amf - self.df['phoenix_memory_allocated_cm_globalP_amf'].sum()) / self.df['subscriber_count_Connected'].sum()
+
+        # Append the calculated values to the end of the CSV file
+        with open(os.path.join('data', csv_filename), 'a') as f:
+            f.write("\n# Per UE session mempool allocated (Formula: sum(phoenix_memory_allocated_cm_globalP_amf) / sum(subscriber_count_Connected))\n")
+            f.write("Per UE session mempool allocated, {}\n".format(per_ue_session_mempool_allocated))
+            f.write("\n# Per UE global mempool unallocated (Formula: (last_total_allocated_memory_globalP_amf - sum(phoenix_memory_allocated_cm_globalP_amf)) / sum(subscriber_count_Connected))\n")
+            f.write("Per UE global mempool unallocated, {}\n".format(per_ue_global_mempool_unallocated))
+
         
         print(f"CSV file saved as: {csv_filename} in 'data' folder.")
 

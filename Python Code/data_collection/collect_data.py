@@ -31,7 +31,7 @@ class CsvCollector:
             if series_match:
                 series_numbers.append(int(series_match.group(1)))
         return series_numbers, component_folder_path
-    
+        
     def fetch_and_save_csv(self):
         # Check if 'data' folder exists, if not, create it
         if not os.path.exists('data'):
@@ -44,25 +44,58 @@ class CsvCollector:
             counter += 1
             csv_filename = f"{self.config['component']}_{self.registration_number}_{self.ops_per_second}_set_{counter}.csv"
 
-        # Save CSV file in 'data' folder
+        # Save original CSV file in 'data' folder
         self.df.to_csv(os.path.join('data', csv_filename), index=True)
         
-        # Calculate Per UE session mempool allocated
-        per_ue_session_mempool_allocated = (self.df['phoenix_memory_allocated_cm_globalP_amf'].sum()) / self.df['subscriber_count_Connected'].sum()
+        # Get the latest UE count information
+        latest_ue_count = self.df['subscriber_count_Connected'].iloc[-1]
 
-        # Calculate Per UE global mempool unallocated
-        last_total_allocated_memory_globalP_amf = self.df['total_allocated_memory_globalP_amf'].iloc[-1]
-        per_ue_global_mempool_unallocated = (last_total_allocated_memory_globalP_amf - self.df['phoenix_memory_allocated_cm_globalP_amf'].sum()) / self.df['subscriber_count_Connected'].sum()
+        # Initialize a dictionary to store per UE memory needed for each mempool
+        per_ue_mempool_needed = {}
 
-        # Append the calculated values to the end of the CSV file
-        with open(os.path.join('data', csv_filename), 'a') as f:
-            f.write("\n# Per UE session mempool allocated (Formula: sum(phoenix_memory_allocated_cm_globalP_amf) / sum(subscriber_count_Connected))\n")
-            f.write("Per UE session mempool allocated, {}\n".format(per_ue_session_mempool_allocated))
-            f.write("\n# Per UE global mempool unallocated (Formula: (last_total_allocated_memory_globalP_amf - sum(phoenix_memory_allocated_cm_globalP_amf)) / sum(subscriber_count_Connected))\n")
-            f.write("Per UE global mempool unallocated, {}\n".format(per_ue_global_mempool_unallocated))
+        # Filter columns containing "phoenix_memory_allocated" to fetch mempool types
+        mempool_columns = [col for col in self.df.columns if 'phoenix_memory_allocated' in col]
+        #print(mempool_columns)
 
+                # Iterate over each mempool type
+        for mempool_type in mempool_columns:
+            mempool_name = mempool_type.split("_", maxsplit=4)[-1]  # Extract mempool name from column name
+            total_allocated_memory_col = f'total_allocated_memory_{mempool_name}'
+            #print(total_allocated_memory_col)
+            # Calculate Per UE memory needed for the current mempool
+            per_ue_mempool_needed[mempool_type] = ((self.df[mempool_type].iloc[-1] / 1048576) + 
+                                                    ((self.df[total_allocated_memory_col].iloc[-1]) - (self.df[mempool_type].iloc[-1] / 1048576))) / latest_ue_count
+            print(self.df[total_allocated_memory_col].iloc[-1] / 1048576)
+        # Create a new DataFrame for the results
+        df_results = pd.DataFrame({
+            'Date': [datetime.now().strftime('%Y-%m-%d')],
+        })
+        # Add per UE memory needed for each mempool to the results DataFrame
+        for mempool_type, per_ue_memory in per_ue_mempool_needed.items():
+            mempool_name = mempool_type.split("_")[4]  # Extract mempool name from column name
+            df_results[f'Per UE {mempool_name} mempool needed'] = [per_ue_memory]
+        # Save the results to a new CSV file with component name
+        results_csv_filename = f"per_ue_{self.config['component']}_needed.csv"
+        results_csv_path = os.path.join('data', results_csv_filename)
         
-        print(f"CSV file saved as: {csv_filename} in 'data' folder.")
+        # Check if results CSV file exists
+        if os.path.exists(results_csv_path):
+            # Load existing results CSV file
+            df_existing_results = pd.read_csv(results_csv_path)
+            # Append new results to existing file
+            df_combined_results = pd.concat([df_existing_results, df_results], ignore_index=True)
+            # Save combined results back to the same CSV file
+            df_combined_results.to_csv(results_csv_path, index=False)
+        else:
+            # If results CSV file doesn't exist, create a new one
+            df_results.to_csv(results_csv_path, index=False)
+
+        print(f"Original CSV file saved as: {csv_filename} in 'data' folder.")
+        print(f"Results CSV file saved as: {results_csv_filename} in 'data' folder.")
+
+
+
+
 
     def collect_csv_data(self):
             self.df = fetch_and_convert_data(self.config, 'queries', self.start_time, self.end_time, self.config['step'])

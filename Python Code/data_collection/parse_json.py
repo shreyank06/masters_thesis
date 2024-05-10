@@ -132,6 +132,7 @@ def convert_to_dataframe(config, data):
 
     merged_df = merged_df.apply(pd.to_numeric, errors='ignore')
     merged_df = multiply_columns(merged_df, component)
+
     #merged_df = used_memory(merged_df, component)
     #merged_df = memory_per_ue(merged_df, component)
     #merged_df = process_memory_to_mb(merged_df, component)

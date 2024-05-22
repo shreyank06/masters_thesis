@@ -3,16 +3,18 @@ from .baseline import Baseline
 from .autoregressive_model.feedback import FeedBack
 import os
 import sys
-
-from kerastuner.tuners import RandomSearch
-from kerastuner.engine.hyperparameters import HyperParameters
+import numpy as np
+import keras_tuner as kt
+import keras
+# from kerastuner.tuners import RandomSearch
+from keras_tuner.engine.hyperparameters import HyperParameters
 import pandas as pd
 import matplotlib.pyplot as plt
-#tf.compat.v1.experimental.output_all_intermediates(True)
+tf.compat.v1.experimental.output_all_intermediates(True)
 
 
 class Models:
-    MAX_EPOCHS = 300
+    MAX_EPOCHS = 50
 
     def __init__(self, column_indices, window_size, num_features, config):
         self.column_indices = column_indices
@@ -20,6 +22,7 @@ class Models:
         self.num_features = num_features
         self.config = config
         self.hp = HyperParameters()
+        self.model = None
         
         
     def create_baseline_model(self):
@@ -121,10 +124,10 @@ class Models:
         # Adding more `lstm_units` just overfits more quickly.
         tf.keras.layers.LSTM(units, return_sequences=False),
         # Shape => [batch, out_steps*features].
-        tf.keras.layers.Dense(wide_window.label_width*num_features,
+        tf.keras.layers.Dense(self.window_size.label_width*self.num_features,
                             kernel_initializer=tf.initializers.zeros()),
         # Shape => [batch, out_steps, features].
-        tf.keras.layers.Reshape([wide_window.label_width, num_features])
+        tf.keras.layers.Reshape([self.window_size.label_width, self.num_features])
     ])
         return multi_lstm_model
 
@@ -132,47 +135,37 @@ class Models:
 
         autoregressive_feedback_lstm = FeedBack(units=32, out_steps=wide_window.input_width, num_features=num_features)
         return autoregressive_feedback_lstm
-
-    def hyperparameter_tuning(self, model_fn, model_type):
-        tuner = RandomSearch(
-            model_fn,
-            objective='val_loss',
-            max_trials=5,
-            executions_per_trial=1,
-            directory='hyperparameter_tuning',
-            project_name=f'{model_type}')
-
-        tuner.search(self.window_size.train,
-                    validation_data=self.window_size.val,
-                    epochs=self.MAX_EPOCHS)
+    
+    def build_model(self, hp):
         
-        best_hyperparameters = tuner.get_best_hyperparameters()[0]
-        best_model = tuner.hypermodel.build(best_hyperparameters)  # Build the model with the best hyperparameters
+        optimizer = self.hp.Choice('optimizer', ['adam', 'sgd', 'rmsprop'])
         
-        #best_model = tuner.get_best_models(num_models=1)[0]
-        
-        best_model.compile(loss=tf.keras.losses.MeanSquaredError(),
-                        optimizer=tf.keras.optimizers.Adam(),
-                        metrics=[tf.keras.metrics.MeanAbsoluteError()])
-        # history = best_model.fit(self.window_size.train, epochs=self.MAX_EPOCHS,
-        #                      validation_data=self.window_size.val,
-        #                      callbacks=[early_stopping])
+        self.model.compile(loss=tf.keras.losses.MeanSquaredError(),
+                      optimizer=optimizer, #tf.keras.optimizers.legacy.Adam(),
+                      metrics=[tf.keras.metrics.MeanAbsoluteError()])
+        return self.model
 
-        return best_model
 
-    def compile_and_fit(self, model, model_type, patience=250):
-        # tuner = RandomSearch(
-        #     model,
-        #     objective='val_loss',
-        #     max_trials=5,
-        #     executions_per_trial=1,
-        #     directory='hyperparameter_tuning',
-        #     project_name=model_type)
+   # def hyperparameter_tuning(self, model_fn, model_type):
+    def compile_and_fit(self, model, model_type, patience=2):
         
+        # MAX_TRIALS = 20
+        # EXECUTIONS_PER_TRIAL = 5
+        # RANDOM_SEED = 42
+        # tuner = kt.RandomSearch(
+        #         self.build_model,
+        #         objective='val_accuracy',
+        #         max_trials=MAX_TRIALS,
+        #         executions_per_trial=EXECUTIONS_PER_TRIAL,
+        #         directory='test_dir',
+        #         project_name='tune_optimizer',
+        #         seed=RANDOM_SEED
+        #         )
         # tuner.search(self.window_size.train,
         #              validation_data=self.window_size.val,
         #              epochs=self.MAX_EPOCHS)
-        
+        # #tuner.results_summary()
+        # sys.exit()
         # best_hyperparameters = tuner.get_best_hyperparameters()[0]
         # best_model = tuner.hypermodel.build(best_hyperparameters)
         
@@ -181,9 +174,12 @@ class Models:
                                                            mode='min')
         
         hp_learning_rate = self.hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4])
+
+        optimizer = self.hp.Choice('optimizer', ['adam', 'sgd', 'rmsprop'])
+
         
         model.compile(loss=tf.keras.losses.MeanSquaredError(),
-                      optimizer=tf.keras.optimizers.legacy.Adam(),
+                      optimizer=optimizer, #tf.keras.optimizers.legacy.Adam(),
                       metrics=[tf.keras.metrics.MeanAbsoluteError()])
 
         history = model.fit(self.window_size.train, epochs=self.MAX_EPOCHS,
@@ -215,6 +211,10 @@ class Models:
                     self.window_size.plot(dataset='train', model=model)
                     #val_performance[model_type] = model.evaluate(self.window_size.val)
                     performance[model_type] = model.evaluate(self.window_size.test, verbose=0)
+                    print("Plotting accuracy")
+                    history_df = pd.DataFrame(history.history)
+                    history_df.loc[:, ['mean_absolute_error', 'val_mean_absolute_error']].plot()
+                    plt.show()
 
                 else:
                     print('Model is not trained for desired output shape, creating new model and training again')
@@ -223,10 +223,13 @@ class Models:
                     history = self.compile_and_fit(model, model_type)
                     model.save(model_path)
                     self.performance_evaluation(model_type, wide_window)
+                    history_df = pd.DataFrame(history.history)
+                    history_df.loc[:, ['loss', 'val_loss']].plot()
+                    plt.show()
             else:
                 if model.layers[-1].output_shape[1] == self.window_size.train.element_spec[0].shape[1]:
                     model = tf.keras.models.load_model(model_path)
-                    self.window_size.plot(dataset='val', model=model)
+                    self.window_size.plot(dataset='train', model=model)
                     #val_performance[model_type] = model.evaluate(self.window_size.val)
                     performance[model_type] = model.evaluate(self.window_size.test, verbose=0)
                 else:
@@ -236,8 +239,9 @@ class Models:
                     history = self.compile_and_fit(model, model_type)
                     model.save(model_path)
                     self.performance_evaluation(model_type, wide_window)
-            history_df = pd.DataFrame(history.history)
-            history_df.loc[:, ['loss', 'val_loss']].plot()
+                    history_df = pd.DataFrame(history.history)
+                    history_df.loc[:, ['loss', 'val_loss']].plot()
+                    plt.show()
         else:
             # Otherwise, create a new model based on the model type
             print("The model doesnt exist, creating new model")

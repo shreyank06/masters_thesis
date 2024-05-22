@@ -97,7 +97,7 @@ def convert_to_dataframe(config, data):
     for i, metric in enumerate(filtered_results):
         job = metric['metric'].get('job', 'unknown')
         if job == 'phoenix':
-            if'http' in str(metric):
+            if 'http' in str(metric):
                 metric_name = metric["metric"].get("__name__", "unknown")
                 column_name = f'{metric_name}_{component}'
             if 'allocated' in str(metric):
@@ -109,17 +109,27 @@ def convert_to_dataframe(config, data):
             if "chunk_count_total" in str(metric):
                 memtype = metric["metric"].get("memtype", "unknown")
                 column_name = f'phoenix_memory_chunk_count_{memtype}_{component}'
-            if'wasted' in str(metric):
+            if 'wasted' in str(metric):
                 memtype = metric["metric"].get("memtype", "unknown")
                 column_name = f'phoenix_memory_wasted_{memtype}_{component}'
-            if ('open5G_bt_subscriber_count' in str(metric)):
+            if 'open5G_bt_subscriber_count' in str(metric):
                 subscriber_state = metric["metric"].get("subscriber_state", "unknown")
                 column_name = f'subscriber_count_{subscriber_state}'
+            if 'allocation_count_total' in str(metric):
+                memtype = metric["metric"].get("memtype", "unknown")
+                column_name = f'phoenix_memory_cm_allocation_count_total_{memtype}_{component}'
+            if 'max_used_chunks_per_pool_count' in str(metric):
+                memtype = metric["metric"].get("memtype", "unknown")
+                column_name = f'phoenix_memory_cm_max_used_chunks_per_pool_count_{memtype}_{component}'
+            if 'phoenix_memory_cm_used_chunk_count' in str(metric):
+                memtype = metric["metric"].get("memtype", "unknown")
+                column_name = f'phoenix_memory_cm_used_chunk_count_{memtype}_{component}'
+
         if job == 'process':
-            if'cpu' in str(metric):
+            if 'cpu' in str(metric):
                 mode = metric["metric"].get("mode", "unknown")
                 column_name = f'cpu_{component}_{mode}'
-            if"namedprocess_namegroup_memory_bytes" in str(metric):
+            if "namedprocess_namegroup_memory_bytes" in str(metric):
                 memtype = metric["metric"].get("memtype", "unknown")
                 column_name = f'process_memory_{component}_{memtype}'
         df = pd.DataFrame(metric["values"], columns=['timestamp', column_name])
@@ -133,11 +143,12 @@ def convert_to_dataframe(config, data):
     merged_df = merged_df.apply(pd.to_numeric, errors='ignore')
     merged_df = multiply_columns(merged_df, component)
 
-    #merged_df = used_memory(merged_df, component)
-    #merged_df = memory_per_ue(merged_df, component)
-    #merged_df = process_memory_to_mb(merged_df, component)
+    # merged_df = used_memory(merged_df, component)
+    # merged_df = memory_per_ue(merged_df, component)
+    # merged_df = process_memory_to_mb(merged_df, component)
 
     return merged_df
+
 
 def multiply_columns(df, component):
     # Find all columns with 'phoenix_memory_chunksize_' or 'phoenix_memory_chunk_count_' prefix

@@ -1,0 +1,18 @@
+,Column Name,Spearman Correlation (corr),Pearson Correlation (corr_2),Distance Correlation (corr_3)
+0,http_client_request_count_smf,1.0,1.0,1.0
+1,http_client_response_count_smf,1.0,1.0,1.0
+2,http_server_request_count_smf,1.0,1.0,1.0
+3,process_memory_smf_proportionalResident,1.0,0.9631522875013525,0.0
+4,phoenix_memory_used_cm_globalP_smf,1.0,1.0000000000000002,1.0000000000000018
+5,phoenix_memory_used_cm_packetP_smf,1.0,1.0,0.9999999999999989
+6,phoenix_memory_used_cm_sessionP_smf,1.0,0.9999999999979104,0.999999999999486
+7,cpu_smf_system,0.9999998805717253,0.9764895051551455,0.9869001725339002
+8,cpu_smf_user,0.9999998293881747,0.9832319832179434,0.9915199041718334
+9,process_memory_smf_resident,0.9999813917653723,0.9626126502719401,0.0
+10,process_memory_smf_proportionalSwapped,-0.4398985525729258,-0.4398985525729252,0.45164139012212984
+11,process_memory_smf_swapped,-0.5026112650276832,-0.5026112650276839,0.5160274654108725
+12,subscriber_count_Unregistered,-1.0,-1.0,1.0
+13,process_memory_smf_virtual,,,0.0
+14,subscriber_count_Idle,,,0.0
+15,subscriber_count_Pending,,,0.0
+16,phoenix_memory_used_cm_transactionP_smf,,,2.064059737377952

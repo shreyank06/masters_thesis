@@ -66,6 +66,8 @@ class CsvCollector:
             per_ue_mempool_needed[mempool_type] = ((self.df[mempool_type].iloc[-1] / 1048576) + 
                                                     ((self.df[total_allocated_memory_col].iloc[-1]) - (self.df[mempool_type].iloc[-1] / 1048576))) / latest_ue_count
             print(self.df[total_allocated_memory_col].iloc[-1] / 1048576)
+            print(self.df[mempool_type])
+        sys.exit()
         # Create a new DataFrame for the results
         df_results = pd.DataFrame({
             'Date': [datetime.now().strftime('%Y-%m-%d')],

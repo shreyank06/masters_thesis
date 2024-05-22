@@ -11,7 +11,7 @@ class WindowGenerator():
     self.train_df = train_df
     self.val_df = val_df
     self.test_df = test_df
-
+    print(label_columns)
     # Work out the label column indices.
     self.label_columns = label_columns
     if label_columns is not None:
@@ -44,6 +44,7 @@ class WindowGenerator():
   def split_window(self, features):
       inputs = features[:, self.input_slice, :]
       labels = features[:, self.labels_slice, :]
+      print(inputs)
       if self.label_columns is not None:
         labels = tf.stack(
             [labels[:, :, self.column_indices[name]] for name in self.label_columns],
@@ -56,7 +57,7 @@ class WindowGenerator():
 
       return inputs, labels
   
-  def plot(self, dataset='train', model=None, plot_col='phoenix_memory_used_cm_sessionP_smf', max_subplots=3):
+  def plot(self, dataset='train', model=None, plot_col='Per UE packetP mempool needed', max_subplots=3):
       
           
       if dataset == 'train':

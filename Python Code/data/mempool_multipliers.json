@@ -1,0 +1,8 @@
+{
+    "smf": {
+        "Per UE sessionP_smf mempool needed": 0.08331298828125,
+        "Per UE packetP_smf mempool needed": 0.027408590751115,
+        "Per UE globalP_smf mempool needed": 0.000482198967568,
+        "Static memory needed for transactionP_smf": 0.0012521743774409999
+    }
+}

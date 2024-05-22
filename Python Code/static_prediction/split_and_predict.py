@@ -39,17 +39,19 @@ class Predictor:
         date_time = pd.to_datetime(self.df.pop('timestamp'), format='%Y-%m-%d %H:%M:%S')
         column_indices = {name: i for i, name in enumerate(self.df.columns)}
         self.scaled_df = pd.DataFrame(self.scaler.fit_transform(self.df), columns=self.df.columns, index=self.df.index)
-
+        print(self.scaled_df)
         n = len(self.scaled_df)
         self.train_df = self.scaled_df[0:int(n*0.7)]
         self.val_df = self.scaled_df[int(n*0.7):int(n*0.9)]
         self.test_df = self.scaled_df[int(n*0.9):]
+
+        print("Number of rows in test data:", len(self.test_df))
         
         if self.config['convert_to_pca']:
             pca = PCA(2)
             self.train_df, self.val_df, self.test_df = pca.convert_to_pca(self.train_df, self.val_df, self.test_df)
 
-        # self.train_df.to_csv('train_data.csv', index=False)
+        self.train_df.to_csv('train_data_pca.csv', index=False)
         # self.val_df.to_csv('val_data.csv', index = False)
 
         self.predict(column_indices)
@@ -61,7 +63,7 @@ class Predictor:
        
         wide_window = WindowGenerator(
                 input_width=self.config['window_width']['input_width'], label_width=self.config['window_width']['label_width'], shift=self.config['window_width']['shift'],
-                train_df=self.train_df, val_df=self.train_df, test_df=self.test_df, label_columns=[self.config['label_columns']+self.config['component']])
+                train_df=self.train_df, val_df=self.train_df, test_df=self.test_df, label_columns=[self.config['label_columns']])#+self.config['component']])
 
         
         # baseline_model=Models(column_indices, wide_window)
@@ -98,11 +100,11 @@ class Predictor:
         #     #self.mae_val.extend([multi_step_densed_model_val_performance])
         #     self.mae_test.extend([multi_step_densed_model_test_performance])
 
-        if self.config['models']['multi_step_convolutional_model']:
-            multi_step_conv_model = Models(column_indices, wide_window, num_features, self.config)
-            multi_step_conv_model_val_performance, multi_step_conv_model_test_performance = multi_step_conv_model.performance_evaluation('multi_step_conv', wide_window)
-            #self.mae_val.extend([multi_step_conv_model_val_performance])
-            self.mae_test.extend([multi_step_conv_model_test_performance])        
+        # if self.config['models']['multi_step_convolutional_model']:
+        #     multi_step_conv_model = Models(column_indices, wide_window, num_features, self.config)
+        #     multi_step_conv_model_val_performance, multi_step_conv_model_test_performance = multi_step_conv_model.performance_evaluation('multi_step_conv', wide_window)
+        #     #self.mae_val.extend([multi_step_conv_model_val_performance])
+        #     self.mae_test.extend([multi_step_conv_model_test_performance])        
 
         if self.config['models']['multi_step_lstm_model']:
             multi_step_lstm_model = Models(column_indices, wide_window, num_features, self.config)

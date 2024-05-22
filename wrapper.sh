@@ -25,7 +25,10 @@ send_request() {
     }'
 
     # Get current timestamp as start time
-    local start_time=$(date -d "-1 hour" +"%Y-%m-%dT%H:%M:%S")
+    local start_time=$(date -d "-2 hour" +"%Y-%m-%dT%H:%M:%S")
+
+    # # Introduce a 5-second delay
+    # sleep 5
 
     # Send POST request with curl and save response
     local response=$(curl -s -X POST -H "Content-Type: application/json-rpc" -d "$params" "$url")
@@ -33,7 +36,7 @@ send_request() {
     # Check if execution is completed
     if [[ "$response" == *"Execution Finished"* ]]; then
         # Get current timestamp as end time
-        local end_time=$(date -d "-1 hour" +"%Y-%m-%dT%H:%M:%S")
+        local end_time=$(date -d "-2 hour" +"%Y-%m-%dT%H:%M:%S")
     fi
 
     cd "Python Code"

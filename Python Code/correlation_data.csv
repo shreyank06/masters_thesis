@@ -1,0 +1,18 @@
+,Column Name,Spearman Correlation (corr),Pearson Correlation (corr_2),Distance Correlation (corr_3)
+0,http_client_request_count_smf,1,0.99999999999791,0.999999999999484
+1,http_client_response_count_smf,1,0.99999999999791,0.999999999999484
+2,http_server_request_count_smf,1,0.99999999999791,0.999999999999485
+3,process_memory_smf_proportionalResident,1,0.963151794371467,0.687881863975123
+4,subscriber_count_Connected,1,0.99999999999791,0.999999999999486
+5,phoenix_memory_used_cm_globalP_smf,1,0.999999999997913,0.999999999999483
+6,phoenix_memory_used_cm_packetP_smf,1,0.999999999997911,0.999999999999485
+7,cpu_smf_system,0.999999880571725,0.976489779401968,0.986900246562759
+8,cpu_smf_user,0.999999829388175,0.98323223728933,0.991519971939082
+9,process_memory_smf_resident,0.999981391765372,0.962612152606407,0.687497792133103
+10,process_memory_smf_proportionalSwapped,-0.439898552572926,-0.439896884747251,0.451640067055158
+11,process_memory_smf_swapped,-0.502611265027683,-0.502609671853907,0.516026253917374
+12,subscriber_count_Unregistered,-1,-0.99999999999791,0.999999999999503
+13,process_memory_smf_virtual,,,0
+14,subscriber_count_Idle,,,0
+15,subscriber_count_Pending,,,0
+16,phoenix_memory_used_cm_transactionP_smf,,,

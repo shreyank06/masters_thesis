@@ -1,8 +1,8 @@
 Per UE sessionP_smf mempool needed,0.08331298828125
-Per UE packetP_smf mempool needed,0.02740859075111533
+Per UE packetP_smf mempool needed,0.028546137893382197
 Per UE globalP_smf mempool needed,0.000482198967568
-Static memory needed for transactionP_smf,0.0012521743774412026
-Per UE packetP_amf mempool needed,0.02211208069847984
-Per UE transactionP_amf mempool needed,0.0022281397315025
-Per UE sessionP_amf mempool needed,0.0024807837701615
-Per UE globalP_amf mempool needed,0.0015943877551020276
+Static memory needed for transactionP_smf,0.001252174377441203
+Per UE packetP_amf mempool needed,0.0184
+Per UE transactionP_amf mempool needed,0.0022
+Per UE sessionP_amf mempool needed,0.00253
+Per UE globalP_amf mempool needed,0.0016

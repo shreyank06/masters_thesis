@@ -1,8 +1,13 @@
+
+
 Usage for data collection
 ```
-./wrapper.sh 100 1
+1. Start ph_init
+2. go to http://192.168.254.130:9090 and see prometheus has started
+3. Clone this repo
+4. Run ./wrapper.sh A B, where argument A is the number of registrations, and B is the number of frequencies
+5. After all the registraions are over, the script will extract and load the csv files
 ```
-where is 100 is registration number and 1 is operations per second
 
 for performing single step predictions
 ```

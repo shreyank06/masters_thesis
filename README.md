@@ -3,7 +3,7 @@
 Usage for data collection
 ```
 1. Start ph_init
-2. go to http://192.168.254.130:9090 and see prometheus has started
+2. go to http://192.168.254.130:9090 and see prometheus has started or not, if yes, proceed with next steps
 3. Clone this repo
 4. Run ./wrapper.sh A B, where argument A is the number of registrations, and B is the number of frequencies
 5. After all the registraions are over, the script will extract and load the csv files

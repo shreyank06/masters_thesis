@@ -2,6 +2,7 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import sys
+import os
 
 class WindowGenerator():
   def __init__(self, input_width, label_width, shift,
@@ -57,53 +58,74 @@ class WindowGenerator():
 
       return inputs, labels
   
-  def plot(self, dataset='train', model=None, plot_col='Per UE packetP mempool needed', max_subplots=3):
-      
-          
-      if dataset == 'train':
-          inputs, labels = next(iter(self.train))
-      elif dataset == 'val':
-          inputs, labels = next(iter(self.val))
-      elif dataset == 'test':
-          inputs, labels = next(iter(self.test))
-      elif dataset == 'example':
-          inputs, labels = self.example
-      else:
-          raise ValueError("Invalid dataset. Choose 'train', 'val', or 'test'.")
-      #inputs, labels = self.example
-      plt.figure(figsize=(12, 8))
-      plot_col_index = self.column_indices[plot_col]
-      max_n = min(max_subplots, len(inputs))
-      
-      for n in range(max_n):
-        plt.subplot(max_n, 1, n+1)
-        plt.ylabel(f'{plot_col} [normed]')
-        plt.plot(self.input_indices, inputs[n, :, plot_col_index],
-                label='Inputs', marker='.', zorder=-10)
-
-        if self.label_columns:
-          label_col_index = self.label_columns_indices.get(plot_col, None)
+  def plot(self, dataset='train', model=None, plot_col=None, max_subplots=3):
+        # Determine which dataset to use
+        if dataset == 'train':
+            inputs, labels = next(iter(self.train))
+        elif dataset == 'val':
+            inputs, labels = next(iter(self.val))
+        elif dataset == 'test':
+            inputs, labels = next(iter(self.test))
+        elif dataset == 'example':
+            inputs, labels = self.example
         else:
-          label_col_index = plot_col_index
+            raise ValueError("Invalid dataset. Choose 'train', 'val', 'test', or 'example'.")
 
-        if label_col_index is None:
-          continue
+        # Determine which columns to plot
+        if plot_col is not None:
+            if plot_col not in self.column_indices:
+                raise KeyError(f"'{plot_col}' not found in column indices. Available keys: {list(self.column_indices.keys())}")
+            columns_to_plot = [plot_col]
+        else:
+            # If plot_col is None, plot all columns
+            columns_to_plot = list(self.column_indices.keys())
 
-        plt.scatter(self.label_indices, labels[n, :, label_col_index],
-                    edgecolors='k', label='Labels', c='#2ca02c', s=64)
-        if model is not None:
-          predictions = model(inputs)
-          #print(predictions[n, :, label_col_index])
-          #sys.exit()
-          plt.scatter(self.label_indices, predictions[n, :, label_col_index],
-                      marker='X', edgecolors='k', label='Predictions',
-                      c='#ff7f0e', s=64)
+        # Print the columns that will be plotted
+        print("Columns to be plotted:", columns_to_plot)
 
-        if n == 0:
-          plt.legend()
+        # Create directory for saving plots
+        os.makedirs('predictions', exist_ok=True)
 
-      plt.xlabel('Time [s]')
-      plt.show()
+        for col in columns_to_plot:
+            plot_col_index = self.column_indices[col]
+
+            plt.figure(figsize=(12, 8))
+            plt.ylabel(f'{col} [normed]')
+            
+            # Plot multiple samples for the current column
+            max_n = min(max_subplots, len(inputs))
+            for n in range(max_n):
+                print(f"Plotting sample {n + 1} for column: {col}")
+                plt.plot(self.input_indices, inputs[n, :, plot_col_index],
+                        label='Inputs', marker='.', zorder=-10)
+
+                if self.label_columns:
+                    label_col_index = self.label_columns_indices.get(col, None)
+                else:
+                    label_col_index = plot_col_index
+
+                if label_col_index is None:
+                    print(f"Label column index for {col} is None, skipping labels and predictions.")
+                    continue
+
+                print(f"Plotting labels for sample {n + 1}, column: {col}")
+                plt.scatter(self.label_indices, labels[n, :, label_col_index],
+                            edgecolors='k', label='Labels', c='#2ca02c', s=64)
+                if model is not None:
+                    predictions = model(inputs)
+                    print(f"Plotting predictions for sample {n + 1}, column: {col}")
+                    plt.scatter(self.label_indices, predictions[n, :, label_col_index],
+                                marker='X', edgecolors='k', label='Predictions',
+                                c='#ff7f0e', s=64)
+
+            plt.legend()
+            plt.xlabel('Time [s]')
+            plt.title(f'Column: {col}')
+            plt.savefig(f'predictions/{col}.png')
+            plt.close()
+
+        print("Plots saved in 'predictions' directory.")
+
     
   def make_dataset(self, data):
     data = np.array(data, dtype=np.float32)

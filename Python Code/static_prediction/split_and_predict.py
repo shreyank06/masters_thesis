@@ -60,10 +60,24 @@ class Predictor:
 
         num_features = self.train_df.shape[1]
         #print(pca_val_data)
+
+        # wide_window = WindowGenerator(
+        #     input_width=24, label_width=24, shift=1)
+
+        # for example_inputs, example_labels in wide_window.train.take(1):
+        #     print(f'Inputs shape (batch, time, features): {example_inputs.shape}')
+        #     print(f'Labels shape (batch, time, features): {example_labels.shape}')
+
        
+
         wide_window = WindowGenerator(
                 input_width=self.config['window_width']['input_width'], label_width=self.config['window_width']['label_width'], shift=self.config['window_width']['shift'],
-                train_df=self.train_df, val_df=self.train_df, test_df=self.test_df, label_columns=[self.config['label_columns']])#+self.config['component']])
+                train_df=self.train_df, val_df=self.train_df, test_df=self.test_df)#, label_columns=[self.config['label_columns']])#+self.config['component']])
+        
+        for example_inputs, example_labels in wide_window.train.take(1):
+            print(f'Inputs shape (batch, time, features): {example_inputs.shape}')
+            print(f'Labels shape (batch, time, features): {example_labels.shape}')
+        
 
         
         # baseline_model=Models(column_indices, wide_window)

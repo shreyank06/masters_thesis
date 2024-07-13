@@ -1,0 +1,28 @@
+,,,,,globalP,globalP,globalP,globalP,globalP,globalP,packetP,packetP,packetP,packetP,packetP,packetP,sessionP,sessionP,sessionP,sessionP,sessionP,sessionP,transactionP,transactionP,transactionP,transactionP,transactionP,transactionP
+,subscriber_count_Connected,subscriber_count_Idle,subscriber_count_Pending,subscriber_count_Unregistered,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_globalP_udm,phoenix_memory_cm_used_chunk_count_cm_globalP_udm,phoenix_memory_pool_create_count_cm_globalP_udm,phoenix_memory_pool_destroy_count_cm_globalP_udm,total_allocated_memory_globalP_udm,chunk_create_count_minus_destroy_count_cm_globalP_udm,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_packetP_udm,phoenix_memory_cm_used_chunk_count_cm_packetP_udm,phoenix_memory_pool_create_count_cm_packetP_udm,phoenix_memory_pool_destroy_count_cm_packetP_udm,total_allocated_memory_packetP_udm,chunk_create_count_minus_destroy_count_cm_packetP_udm,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_sessionP_udm,phoenix_memory_cm_used_chunk_count_cm_sessionP_udm,phoenix_memory_pool_create_count_cm_sessionP_udm,phoenix_memory_pool_destroy_count_cm_sessionP_udm,total_allocated_memory_sessionP_udm,chunk_create_count_minus_destroy_count_cm_sessionP_udm,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_transactionP_udm,phoenix_memory_cm_used_chunk_count_cm_transactionP_udm,phoenix_memory_pool_create_count_cm_transactionP_udm,phoenix_memory_pool_destroy_count_cm_transactionP_udm,total_allocated_memory_transactionP_udm,chunk_create_count_minus_destroy_count_cm_transactionP_udm
+timestamp,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2024-07-03 11:02:54,96,0,54,9850,9,37,37,0,16.0,37,33,5,18787,18781,32.0,6,1,0,151,151,16.0,0,2,4,1929,1925,16.0,4
+2024-07-03 11:02:55,96,0,54,9850,9,37,37,0,16.0,37,33,5,18787,18781,32.0,6,1,0,151,151,16.0,0,2,4,1929,1925,16.0,4
+2024-07-03 11:02:56,96,0,54,9850,9,37,37,0,16.0,37,33,5,18787,18781,32.0,6,1,0,151,151,16.0,0,2,4,1929,1925,16.0,4
+2024-07-03 11:02:57,11,0,0,9989,6,29,29,0,16.0,29,6,5,16,10,32.0,6,1,0,12,12,16.0,0,2,4,86,82,16.0,4
+2024-07-03 11:02:58,16,0,0,9984,6,30,30,0,16.0,30,11,5,27,21,32.0,6,1,0,17,17,16.0,0,2,4,122,118,16.0,4
+2024-07-03 11:02:59,21,0,0,9979,6,30,30,0,16.0,30,12,5,39,33,32.0,6,1,0,22,22,16.0,0,2,4,158,154,16.0,4
+2024-07-03 11:03:00,26,0,0,9974,6,30,30,0,16.0,30,13,5,52,46,32.0,6,1,0,27,27,16.0,0,2,4,194,190,16.0,4
+2024-07-03 11:03:01,31,0,0,9969,6,31,31,0,16.0,31,13,5,65,59,32.0,6,1,0,32,32,16.0,0,2,4,230,226,16.0,4
+2024-07-03 11:03:02,36,0,0,9964,6,31,31,0,16.0,31,14,5,79,73,32.0,6,1,0,37,37,16.0,0,2,4,266,262,16.0,4
+2024-07-03 11:03:03,41,0,0,9959,6,31,31,0,16.0,31,15,5,94,88,32.0,6,1,0,42,42,16.0,0,2,4,302,298,16.0,4
+2024-07-03 11:03:04,46,0,0,9954,6,32,32,0,16.0,32,16,5,110,104,32.0,6,1,0,47,47,16.0,0,2,4,338,334,16.0,4
+2024-07-03 11:03:05,51,0,0,9949,6,32,32,0,16.0,32,17,5,127,121,32.0,6,1,0,52,52,16.0,0,2,4,374,370,16.0,4
+2024-07-03 11:03:06,56,0,0,9944,6,32,32,0,16.0,32,18,5,145,139,32.0,6,1,0,57,57,16.0,0,2,4,410,406,16.0,4
+2024-07-03 11:03:07,61,0,0,9939,6,33,33,0,16.0,33,19,5,164,158,32.0,6,1,0,62,62,16.0,0,2,4,446,442,16.0,4
+2024-07-03 11:03:08,66,0,0,9934,6,33,33,0,16.0,33,20,5,184,178,32.0,6,1,0,67,67,16.0,0,2,4,482,478,16.0,4
+2024-07-03 11:03:09,71,0,0,9929,6,33,33,0,16.0,33,20,5,204,198,32.0,6,1,0,72,72,16.0,0,2,4,518,514,16.0,4
+2024-07-03 11:03:10,76,0,0,9924,6,33,33,0,16.0,33,21,5,225,219,32.0,6,1,0,77,77,16.0,0,2,4,554,550,16.0,4
+2024-07-03 11:03:11,81,0,0,9919,6,34,34,0,16.0,34,22,5,247,241,32.0,6,1,0,82,82,16.0,0,2,4,590,586,16.0,4
+2024-07-03 11:03:12,86,0,0,9914,6,34,34,0,16.0,34,23,5,270,264,32.0,6,1,0,87,87,16.0,0,2,4,626,622,16.0,4
+2024-07-03 11:03:13,91,0,0,9909,6,34,34,0,16.0,34,24,5,294,288,32.0,6,1,0,92,92,16.0,0,2,4,662,658,16.0,4
+2024-07-03 11:03:14,96,0,0,9904,7,35,35,0,16.0,35,25,5,319,313,32.0,6,1,0,97,97,16.0,0,2,4,698,694,16.0,4
+,32.0,4
+0,9914,19,39,39,0,32.0,39,335,236,11867,11687,32.0,180,12,1799,1970,171,32.0,1799,2,4,191,187,32.0,4
+2024-07-03 11:03:13,91,0,0,9909,19,39,39,0,32.0,39,355,249,12744,12554,32.0,190,12,1904,2085,181,32.0,1904,2,4,202,198,32.0,4
+2024-07-03 11:03:14,96,0,0,9904,19,39,39,0,32.0,39,375,263,13641,13441,32.0,200,12,2009,2200,191,32.0,2009,2,4,213,209,32.0,4

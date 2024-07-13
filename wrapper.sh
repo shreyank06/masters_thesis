@@ -36,6 +36,7 @@ send_request() {
     # Check if execution is completed
     if [[ "$response" == *"Execution Finished"* ]]; then
         # Get current timestamp as end time
+        # sleep 5s
         local end_time=$(date -d "-2 hour" +"%Y-%m-%dT%H:%M:%S")
     fi
 

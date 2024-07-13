@@ -10,7 +10,7 @@
         "phoenix_memory_cm_wasted_bytes",
         "open5G_bt_subscriber_count"
     ],
-    "queries": [
+    "queries_2": [
         "phoenix_memory_cm_allocated_bytes",
         "phoenix_memory_cm_chunksize_bytes",
         "phoenix_memory_cm_chunk_count_total",
@@ -18,20 +18,32 @@
         "phoenix_memory_cm_max_used_chunks_per_pool_count",
         "phoenix_memory_cm_used_chunk_count",
         "phoenix_memory_cm_wasted_bytes",
+        "phoenix_memory_pool_create_count",
+        "phoenix_memory_pool_destroy_count",
         "open5G_bt_subscriber_count"
     ],
+    "queries": [
+        "phoenix_memory_cm_chunksize_bytes",
+        "phoenix_memory_cm_chunk_count_total",
+        "phoenix_memory_pool_create_count",
+        "phoenix_memory_pool_destroy_count",
+        "phoenix_memory_cm_max_used_chunks_per_pool_count",
+        "open5G_bt_subscriber_count"
+    ],
+    "transform_data": "true",
     "start_time": "2024-01-29T11:10:00",
     "end_time": "2024-01-29T11:10:30",
     "step": "1s",
-    "component": "amf",
+    "component": ["smf","amf", "upf1", "ausf", "udm"],
+    "regroup_columns":false,
     "retrain_model":true,
     "get_csv": true,
     "convert_json_to_features":false,
 
     "window_width": {
-        "input_width": 14,
-        "label_width": 1,
-        "shift": 1
+        "input_width": 10,
+        "label_width": 10,
+        "shift": 10
     },
     
     "label_columns": "Per UE packetP mempool needed",

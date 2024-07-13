@@ -9,7 +9,7 @@ import re
 import plotly.graph_objs as go
 
 class CsvCollector:
-    def __init__(self, start_time, end_time, config, registration_number, ops_per_second):
+    def __init__(self, start_time, end_time, config, registration_number, ops_per_second, component):
         self.start_time = start_time
         self.end_time = end_time
         self.config = config
@@ -17,6 +17,7 @@ class CsvCollector:
         self.registration_number = registration_number
         self.ops_per_second = ops_per_second
         self.df = None
+        self.component = component
 
     def get_existing_series(self):
         # Get series numbers from existing CSV filenames
@@ -37,12 +38,12 @@ class CsvCollector:
         if not os.path.exists('data'):
             os.makedirs('data')
 
-        csv_filename = f"{self.config['component']}_{self.registration_number}_{self.ops_per_second}_set.csv"
+        csv_filename = f"{self.component}_{self.registration_number}_{self.ops_per_second}_set.csv"
         
         counter = 0
         while os.path.exists(os.path.join('data', csv_filename)):
             counter += 1
-            csv_filename = f"{self.config['component']}_{self.registration_number}_{self.ops_per_second}_set_{counter}.csv"
+            csv_filename = f"{self.component}_{self.registration_number}_{self.ops_per_second}_set_{counter}.csv"
 
         # Save original CSV file in 'data' folder
         self.df.to_csv(os.path.join('data', csv_filename), index=True)

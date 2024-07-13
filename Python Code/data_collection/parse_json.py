@@ -87,12 +87,12 @@ def process_memory_to_mb(merged_df, component):
 
     return merged_df
 
-def convert_to_dataframe(config, data):
+def convert_to_dataframe(config, data, component):
 
     merged_df = pd.DataFrame()
     # Filter the results based on the job type and component
     filtered_results = filtered_json(config, data)
-    component = config['component']
+    memtypes = []
 
     for i, metric in enumerate(filtered_results):
         job = metric['metric'].get('job', 'unknown')
@@ -114,7 +114,9 @@ def convert_to_dataframe(config, data):
                 column_name = f'phoenix_memory_wasted_{memtype}_{component}'
             if 'open5G_bt_subscriber_count' in str(metric):
                 subscriber_state = metric["metric"].get("subscriber_state", "unknown")
-                column_name = f'subscriber_count_{subscriber_state}'
+                print(subscriber_state)
+                if subscriber_state == "Connected":
+                    column_name = f'subscriber_count_{subscriber_state}'
             if 'allocation_count_total' in str(metric):
                 memtype = metric["metric"].get("memtype", "unknown")
                 column_name = f'phoenix_memory_cm_allocation_count_total_{memtype}_{component}'
@@ -124,6 +126,16 @@ def convert_to_dataframe(config, data):
             if 'phoenix_memory_cm_used_chunk_count' in str(metric):
                 memtype = metric["metric"].get("memtype", "unknown")
                 column_name = f'phoenix_memory_cm_used_chunk_count_{memtype}_{component}'
+                print(222)
+            if 'pool_create_count' in str(metric):
+                memtype = metric["metric"].get("memtype", "unknown")
+                column_name = f'phoenix_memory_pool_create_count_{memtype}_{component}'
+            if 'pool_destroy_count' in str(metric):
+                memtype = metric["metric"].get("memtype", "unknown")
+                column_name = f'phoenix_memory_pool_destroy_count_{memtype}_{component}'
+                if memtype not in memtypes:
+                    memtypes.append(memtype)
+
 
         if job == 'process':
             if 'cpu' in str(metric):
@@ -139,16 +151,57 @@ def convert_to_dataframe(config, data):
             merged_df = pd.merge(merged_df, df, how='inner', left_index=True, right_index=True)
         else:
             merged_df = df
+    merged_df = merged_df.apply(pd.to_numeric, errors='ignore')
+    if config["transform_data"]:
+        merged_df = multiply_columns(merged_df, component)
+        merged_df = process_memory_pool_counts(merged_df, memtypes, component)
 
+    if config["regroup_columns"]:
+        memtype_df = create_memtype_df(merged_df, component)
+        memtype_df.to_csv('memtype_df.csv', index=True)
+        return memtype_df
+    else:
+        #sys.exit()
+        return merged_df
+
+def create_memtype_df(merged_df, component):
+    # Apply numeric conversion and multiply columns
     merged_df = merged_df.apply(pd.to_numeric, errors='ignore')
     merged_df = multiply_columns(merged_df, component)
 
-    # merged_df = used_memory(merged_df, component)
-    # merged_df = memory_per_ue(merged_df, component)
-    # merged_df = process_memory_to_mb(merged_df, component)
+    # Extract columns with specified substrings
+    cm_columns = [col for col in merged_df.columns if 'globalP' in col or 'packetP' in col or 'sessionP' in col or 'transactionP' in col]
 
-    return merged_df
+    # Extract remaining columns
+    other_columns = [col for col in merged_df.columns if col not in cm_columns]
 
+    # Reorder columns in the DataFrame
+    reordered_columns = []
+    for suffix in ['globalP', 'packetP', 'sessionP', 'transactionP']:
+        reordered_columns.extend([col for col in cm_columns if suffix in col])
+
+    reordered_columns = other_columns + reordered_columns
+    memtype_df = merged_df[reordered_columns]
+
+    # Create a new row with the appropriate labels based on the substrings in the column names
+    new_row = []
+    for col in reordered_columns:
+        if 'globalP' in col:
+            new_row.append('globalP')
+        elif 'packetP' in col:
+            new_row.append('packetP')
+        elif 'sessionP' in col:
+            new_row.append('sessionP')
+        elif 'transactionP' in col:
+            new_row.append('transactionP')
+        else:
+            new_row.append('')
+
+    # Insert the new row as the first row in the DataFrame
+    memtype_df.columns = pd.MultiIndex.from_arrays([new_row, memtype_df.columns])
+    memtype_df.index = merged_df.index
+
+    return memtype_df
 
 def multiply_columns(df, component):
     # Find all columns with 'phoenix_memory_chunksize_' or 'phoenix_memory_chunk_count_' prefix
@@ -171,9 +224,20 @@ def multiply_columns(df, component):
         
     return df
 
-def fetch_and_convert_data(config, query_type, start_time, end_time, step):
+def process_memory_pool_counts(df, memtypes, component):
+    for memtype in memtypes:
+        create_col = f"phoenix_memory_pool_create_count_{memtype}_{component}"
+        destroy_col = f"phoenix_memory_pool_destroy_count_{memtype}_{component}"
+        result_col = f"chunk_create_count_minus_destroy_count_{memtype}_{component}"
+
+        if create_col in df.columns and destroy_col in df.columns:
+            df[result_col] = df[create_col] - df[destroy_col]
+            df.drop(columns=[create_col, destroy_col], inplace=True)
+    return df
+
+def fetch_and_convert_data(config, query_type, start_time, end_time, step, component):
     data = fetch_prometheus_data(config, start_time, end_time, step)
     if config['convert_json_to_features']:
-        features = convert_json_to_features(data)
+        features = convert_json_to_features(data, component)
 
-    return convert_to_dataframe(config, data)
+    return convert_to_dataframe(config, data, component)

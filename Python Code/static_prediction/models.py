@@ -14,7 +14,7 @@ tf.compat.v1.experimental.output_all_intermediates(True)
 
 
 class Models:
-    MAX_EPOCHS = 50
+    MAX_EPOCHS = 100
 
     def __init__(self, column_indices, window_size, num_features, config):
         self.column_indices = column_indices
@@ -147,7 +147,7 @@ class Models:
 
 
    # def hyperparameter_tuning(self, model_fn, model_type):
-    def compile_and_fit(self, model, model_type, patience=2):
+    def compile_and_fit(self, model, model_type, patience=10):
         
         # MAX_TRIALS = 20
         # EXECUTIONS_PER_TRIAL = 5
@@ -222,7 +222,8 @@ class Models:
                     model = self.create_model(model_type, wide_window)
                     history = self.compile_and_fit(model, model_type)
                     model.save(model_path)
-                    self.performance_evaluation(model_type, wide_window)
+                    self.window_size.plot(dataset='train', model=model)
+                    #self.performance_evaluation(model_type, wide_window)
                     history_df = pd.DataFrame(history.history)
                     history_df.loc[:, ['loss', 'val_loss']].plot()
                     plt.show()

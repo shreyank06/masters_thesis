@@ -14,3 +14,13 @@ for performing single step predictions
 cd Python Code
 python3 main.py 2024-01-01T00:00:00 2024-01-02T00:00:00 ABC123 100
 ```
+
+To establish socks proxy
+run this command on host
+```
+ssh -D 1337 saparia@192.168.143.5
+```
+and change proxy settings on browser and choose 
+```
+socks host: localhost, port: 1337
+```

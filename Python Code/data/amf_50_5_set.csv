@@ -1,0 +1,12 @@
+timestamp,subscriber_count_Connected_x,subscriber_count_Connected_y,subscriber_count_Connected_x,subscriber_count_Connected_y,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_globalP_amf,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_packetP_amf,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_sessionP_amf,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_transactionP_amf,total_allocated_memory_globalP_amf,total_allocated_memory_packetP_amf,total_allocated_memory_sessionP_amf,total_allocated_memory_transactionP_amf,chunk_create_count_minus_destroy_count_cm_globalP_amf,chunk_create_count_minus_destroy_count_cm_packetP_amf,chunk_create_count_minus_destroy_count_cm_sessionP_amf,chunk_create_count_minus_destroy_count_cm_transactionP_amf
+2024-07-16 10:40:00,0,0,0,10000,6,9,2,2,32.0,64.0,64.0,64.0,36,4,18,8
+2024-07-16 10:40:01,0,0,0,10000,6,9,2,2,32.0,64.0,64.0,64.0,36,4,18,8
+2024-07-16 10:40:02,0,0,0,10000,6,9,2,2,32.0,64.0,64.0,64.0,36,4,18,8
+2024-07-16 10:40:03,0,0,0,10000,6,9,2,2,32.0,64.0,64.0,64.0,36,4,18,8
+2024-07-16 10:40:04,0,0,0,10000,6,9,2,2,32.0,64.0,64.0,64.0,36,4,18,8
+2024-07-16 10:40:05,0,0,0,10000,6,9,2,3,32.0,64.0,64.0,64.0,36,158,40,30
+2024-07-16 10:40:06,0,0,0,10000,6,9,2,3,32.0,64.0,64.0,64.0,36,158,40,30
+2024-07-16 10:40:07,0,0,0,10000,6,9,2,3,32.0,64.0,64.0,64.0,36,158,40,30
+2024-07-16 10:40:08,0,0,0,10000,6,9,2,3,32.0,64.0,64.0,64.0,36,158,40,30
+2024-07-16 10:40:09,0,0,0,10000,6,9,2,3,32.0,64.0,64.0,64.0,36,158,40,30
+2024-07-16 10:40:10,0,0,0,10000,6,9,2,3,32.0,64.0,64.0,64.0,36,158,40,30

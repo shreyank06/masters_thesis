@@ -114,9 +114,7 @@ def convert_to_dataframe(config, data, component):
                 column_name = f'phoenix_memory_wasted_{memtype}_{component}'
             if 'open5G_bt_subscriber_count' in str(metric):
                 subscriber_state = metric["metric"].get("subscriber_state", "unknown")
-                print(subscriber_state)
-                if subscriber_state == "Connected":
-                    column_name = f'subscriber_count_{subscriber_state}'
+                column_name = f'subscriber_count_{subscriber_state}'
             if 'allocation_count_total' in str(metric):
                 memtype = metric["metric"].get("memtype", "unknown")
                 column_name = f'phoenix_memory_cm_allocation_count_total_{memtype}_{component}'
@@ -152,6 +150,7 @@ def convert_to_dataframe(config, data, component):
         else:
             merged_df = df
     merged_df = merged_df.apply(pd.to_numeric, errors='ignore')
+    merged_df = merged_df.drop(columns=config["columns_to_remove"])
     if config["transform_data"]:
         merged_df = multiply_columns(merged_df, component)
         merged_df = process_memory_pool_counts(merged_df, memtypes, component)

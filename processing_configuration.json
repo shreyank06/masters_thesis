@@ -30,6 +30,11 @@
         "phoenix_memory_cm_max_used_chunks_per_pool_count",
         "open5G_bt_subscriber_count"
     ],
+    "columns_to_remove": [
+        "subscriber_count_Idle",
+        "subscriber_count_Pending",
+        "subscriber_count_Unregistered"
+    ],
     "transform_data": "true",
     "start_time": "2024-01-29T11:10:00",
     "end_time": "2024-01-29T11:10:30",

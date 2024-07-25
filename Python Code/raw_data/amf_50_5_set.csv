@@ -1,0 +1,14 @@
+,,globalP,globalP,globalP,globalP,packetP,packetP,packetP,packetP,sessionP,sessionP,sessionP,sessionP,transactionP,transactionP,transactionP,transactionP
+,subscriber_count_Connected,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_globalP_amf,phoenix_memory_pool_create_count_cm_globalP_amf,phoenix_memory_pool_destroy_count_cm_globalP_amf,total_allocated_memory_globalP_amf,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_packetP_amf,phoenix_memory_pool_create_count_cm_packetP_amf,phoenix_memory_pool_destroy_count_cm_packetP_amf,total_allocated_memory_packetP_amf,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_sessionP_amf,phoenix_memory_pool_create_count_cm_sessionP_amf,phoenix_memory_pool_destroy_count_cm_sessionP_amf,total_allocated_memory_sessionP_amf,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_transactionP_amf,phoenix_memory_pool_create_count_cm_transactionP_amf,phoenix_memory_pool_destroy_count_cm_transactionP_amf,total_allocated_memory_transactionP_amf
+timestamp,,,,,,,,,,,,,,,,,
+2024-07-25 09:12:59,50,10,41,0,256.0,191,22189,21832,256.0,2,121,53,256.0,4,2307,2249,256.0
+2024-07-25 09:13:00,53,10,41,0,256.0,191,22464,22086,256.0,2,127,56,256.0,4,2422,2361,256.0
+2024-07-25 09:13:01,58,11,42,0,256.0,202,22806,22393,256.0,2,137,61,256.0,4,2613,2547,256.0
+2024-07-25 09:13:02,63,12,43,0,256.0,219,23165,22717,256.0,2,147,66,256.0,4,2804,2733,256.0
+2024-07-25 09:13:03,68,13,44,0,256.0,237,23542,23059,256.0,2,157,71,256.0,4,2995,2919,256.0
+2024-07-25 09:13:04,73,14,45,0,256.0,254,23936,23418,256.0,2,167,76,256.0,4,3186,3105,256.0
+2024-07-25 09:13:05,78,15,46,0,256.0,271,24347,23794,256.0,2,177,81,256.0,4,3377,3291,256.0
+2024-07-25 09:13:06,83,15,46,0,256.0,289,24776,24188,256.0,2,187,86,256.0,4,3568,3477,256.0
+2024-07-25 09:13:07,88,16,47,0,256.0,306,25222,24599,256.0,2,197,91,256.0,4,3759,3663,256.0
+2024-07-25 09:13:08,93,17,48,0,256.0,324,25686,25028,256.0,2,207,96,256.0,4,3950,3849,256.0
+2024-07-25 09:13:09,98,18,49,0,256.0,341,26167,25474,256.0,2,217,101,256.0,4,4141,4035,256.0

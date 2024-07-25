@@ -40,7 +40,12 @@ def main(start_time, end_time, registration_number, ops_per_second):
     else:
         collect_data_for_component(start_time, end_time, registration_number, ops_per_second, components)
 
-    df = pd.read_csv("data/amf_1000_1_set.csv")
+    # dataset_name = "amf_1000_1_set.csv"
+    # df = pd.read_csv(f"data/{dataset_name}")
+    # predictor = Predictor(df.apply(pd.to_numeric, errors='coerce'), config, dataset_name)
+    # predictor.split()
+    # predictor.predict_on_test_data()  # Example usage of predict_on_test_data method
+
     # per_ue_amf_needed_df = pd.read_csv("data/per_ue_amf_needed.csv")
     # print(per_ue_amf_needed_df)
     # df_1 = df.iloc[:100]
@@ -59,9 +64,7 @@ def main(start_time, end_time, registration_number, ops_per_second):
         #checker.chi_squared_feture_selection('phoenix_memory_used_cm_sessionP_smf')
     #df = pd.concat([df_2, df])
 
-    # predictor = Predictor(df.apply(pd.to_numeric, errors='coerce'), config)
-    # predictor.split()
-    # predictor.predict_on_test_data()  # Example usage of predict_on_test_data method
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:

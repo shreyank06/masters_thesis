@@ -147,7 +147,7 @@ class Models:
 
 
    # def hyperparameter_tuning(self, model_fn, model_type):
-    def compile_and_fit(self, model, model_type, patience=10):
+    def compile_and_fit(self, model, model_type, patience=2):
         
         # MAX_TRIALS = 20
         # EXECUTIONS_PER_TRIAL = 5

@@ -16,7 +16,7 @@ from .pca import PCA
 
 
 class Predictor:
-    def __init__(self, df, config):
+    def __init__(self, df, config, dataset_name):
         self.df = df
         self.scaler = MinMaxScaler(feature_range=(0,1))
         self.config = config
@@ -34,6 +34,7 @@ class Predictor:
         self.pca_train_data = None
         self.pca_val_data = None
         self.pca_test_data = None
+        self.dataset_name = dataset_name
 
     def split(self):
         date_time = pd.to_datetime(self.df.pop('timestamp'), format='%Y-%m-%d %H:%M:%S')
@@ -72,7 +73,7 @@ class Predictor:
 
         wide_window = WindowGenerator(
                 input_width=self.config['window_width']['input_width'], label_width=self.config['window_width']['label_width'], shift=self.config['window_width']['shift'],
-                train_df=self.train_df, val_df=self.train_df, test_df=self.test_df)#, label_columns=[self.config['label_columns']])#+self.config['component']])
+                train_df=self.train_df, val_df=self.train_df, test_df=self.test_df, dataset_name=self.dataset_name)#, label_columns=[self.config['label_columns']])#+self.config['component']])
         
         for example_inputs, example_labels in wide_window.train.take(1):
             print(f'Inputs shape (batch, time, features): {example_inputs.shape}')

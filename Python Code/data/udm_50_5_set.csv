@@ -1,0 +1,12 @@
+timestamp,subscriber_count_Connected,phoenix_memory_chunk_count_cm_globalP_udm,phoenix_memory_chunk_count_cm_packetP_udm,phoenix_memory_chunk_count_cm_sessionP_udm,phoenix_memory_chunk_count_cm_transactionP_udm,phoenix_memory_chunksize_cm_globalP_udm,phoenix_memory_chunksize_cm_packetP_udm,phoenix_memory_chunksize_cm_sessionP_udm,phoenix_memory_chunksize_cm_transactionP_udm,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_globalP_udm,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_packetP_udm,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_sessionP_udm,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_transactionP_udm,phoenix_memory_pool_create_count_cm_globalP_udm,phoenix_memory_pool_create_count_cm_packetP_udm,phoenix_memory_pool_create_count_cm_sessionP_udm,phoenix_memory_pool_create_count_cm_transactionP_udm,phoenix_memory_pool_destroy_count_cm_globalP_udm,phoenix_memory_pool_destroy_count_cm_packetP_udm,phoenix_memory_pool_destroy_count_cm_sessionP_udm,phoenix_memory_pool_destroy_count_cm_transactionP_udm
+2024-07-25 08:47:27,150,65536,65536,65536,32768,2048,2048,2048,4096,13,44,1,2,41,8622,201,1711,0,8616,201,1707
+2024-07-25 08:47:28,153,65536,65536,65536,32768,2048,2048,2048,4096,14,44,1,2,42,8666,204,1733,0,8660,204,1729
+2024-07-25 08:47:29,158,65536,65536,65536,32768,2048,2048,2048,4096,14,45,1,2,42,8711,209,1769,0,8705,209,1765
+2024-07-25 08:47:30,163,65536,65536,65536,32768,2048,2048,2048,4096,14,46,1,2,42,8757,214,1805,0,8751,214,1801
+2024-07-25 08:47:31,168,65536,65536,65536,32768,2048,2048,2048,4096,14,46,1,2,42,8803,219,1841,0,8797,219,1837
+2024-07-25 08:47:32,173,65536,65536,65536,32768,2048,2048,2048,4096,15,47,1,2,43,8850,224,1877,0,8844,224,1873
+2024-07-25 08:47:33,178,65536,65536,65536,32768,2048,2048,2048,4096,15,48,1,2,43,8898,229,1913,0,8892,229,1909
+2024-07-25 08:47:34,183,65536,65536,65536,32768,2048,2048,2048,4096,15,49,1,2,43,8947,234,1949,0,8941,234,1945
+2024-07-25 08:47:35,188,65536,65536,65536,32768,2048,2048,2048,4096,16,50,1,2,44,8997,239,1985,0,8991,239,1981
+2024-07-25 08:47:36,193,65536,65536,65536,32768,2048,2048,2048,4096,16,51,1,2,44,9048,244,2021,0,9042,244,2017
+2024-07-25 08:47:37,198,65536,65536,65536,32768,2048,2048,2048,4096,16,52,1,2,44,9100,249,2057,0,9094,249,2053

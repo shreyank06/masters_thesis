@@ -1,0 +1,14 @@
+,,globalP,globalP,globalP,globalP,packetP,packetP,packetP,packetP,sessionP,sessionP,sessionP,sessionP,transactionP,transactionP,transactionP,transactionP
+,subscriber_count_Connected,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_globalP_ausf,phoenix_memory_pool_create_count_cm_globalP_ausf,phoenix_memory_pool_destroy_count_cm_globalP_ausf,total_allocated_memory_globalP_ausf,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_packetP_ausf,phoenix_memory_pool_create_count_cm_packetP_ausf,phoenix_memory_pool_destroy_count_cm_packetP_ausf,total_allocated_memory_packetP_ausf,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_sessionP_ausf,phoenix_memory_pool_create_count_cm_sessionP_ausf,phoenix_memory_pool_destroy_count_cm_sessionP_ausf,total_allocated_memory_sessionP_ausf,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_transactionP_ausf,phoenix_memory_pool_create_count_cm_transactionP_ausf,phoenix_memory_pool_destroy_count_cm_transactionP_ausf,total_allocated_memory_transactionP_ausf
+timestamp,,,,,,,,,,,,,,,,,
+2024-07-25 09:13:38,100,5,24,0,256.0,18,3067,3064,256.0,1,102,101,256.0,1,1013,1009,256.0
+2024-07-25 09:13:39,103,5,24,0,256.0,18,3085,3082,256.0,1,105,104,256.0,1,1032,1028,256.0
+2024-07-25 09:13:40,108,6,25,0,256.0,19,3104,3101,256.0,1,110,109,256.0,1,1063,1059,256.0
+2024-07-25 09:13:41,113,6,25,0,256.0,19,3123,3120,256.0,1,115,114,256.0,1,1094,1090,256.0
+2024-07-25 09:13:42,118,6,25,0,256.0,20,3143,3140,256.0,1,120,119,256.0,1,1125,1121,256.0
+2024-07-25 09:13:43,123,6,25,0,256.0,21,3164,3161,256.0,1,125,124,256.0,1,1156,1152,256.0
+2024-07-25 09:13:44,128,7,26,0,256.0,21,3185,3182,256.0,1,130,129,256.0,1,1187,1183,256.0
+2024-07-25 09:13:45,133,7,26,0,256.0,22,3207,3204,256.0,1,135,134,256.0,1,1218,1214,256.0
+2024-07-25 09:13:46,138,7,26,0,256.0,23,3230,3227,256.0,1,140,139,256.0,1,1249,1245,256.0
+2024-07-25 09:13:47,143,7,26,0,256.0,23,3253,3250,256.0,1,145,144,256.0,1,1280,1276,256.0
+2024-07-25 09:13:48,148,8,27,0,256.0,24,3277,3274,256.0,1,150,149,256.0,1,1311,1307,256.0

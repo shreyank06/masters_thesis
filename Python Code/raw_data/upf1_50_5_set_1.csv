@@ -1,0 +1,14 @@
+,,globalP,globalP,globalP,globalP,packetP,packetP,packetP,packetP,sessionP,sessionP,sessionP,sessionP,transactionP,transactionP,transactionP,transactionP
+,subscriber_count_Connected,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_globalP_upf1,phoenix_memory_pool_create_count_cm_globalP_upf1,phoenix_memory_pool_destroy_count_cm_globalP_upf1,total_allocated_memory_globalP_upf1,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_packetP_upf1,phoenix_memory_pool_create_count_cm_packetP_upf1,phoenix_memory_pool_destroy_count_cm_packetP_upf1,total_allocated_memory_packetP_upf1,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_sessionP_upf1,phoenix_memory_pool_create_count_cm_sessionP_upf1,phoenix_memory_pool_destroy_count_cm_sessionP_upf1,total_allocated_memory_sessionP_upf1,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_transactionP_upf1,phoenix_memory_pool_create_count_cm_transactionP_upf1,phoenix_memory_pool_destroy_count_cm_transactionP_upf1,total_allocated_memory_transactionP_upf1
+timestamp,,,,,,,,,,,,,,,,,
+2024-07-25 09:13:38,100,19,39,0,256.0,415,48517,48307,256.0,12,2319,205,256.0,2,607,603,256.0
+2024-07-25 09:13:39,103,19,39,0,256.0,415,49142,48928,256.0,12,2365,209,256.0,2,612,608,256.0
+2024-07-25 09:13:40,108,19,39,0,256.0,423,50087,49863,256.0,12,2480,219,256.0,2,623,619,256.0
+2024-07-25 09:13:41,113,19,39,0,256.0,443,51018,50785,256.0,12,2593,228,256.0,2,634,630,256.0
+2024-07-25 09:13:42,118,19,39,0,256.0,462,52036,51792,256.0,12,2710,239,256.0,2,645,641,256.0
+2024-07-25 09:13:43,123,19,39,0,256.0,483,53007,52754,256.0,12,2825,249,256.0,2,656,652,256.0
+2024-07-25 09:13:44,128,19,39,0,256.0,503,54066,53802,256.0,12,2940,259,256.0,2,667,663,256.0
+2024-07-25 09:13:45,133,19,39,0,256.0,523,55111,54837,256.0,12,3055,269,256.0,2,678,674,256.0
+2024-07-25 09:13:46,138,19,39,0,256.0,543,56142,55859,256.0,12,3168,278,256.0,2,689,685,256.0
+2024-07-25 09:13:47,143,19,39,0,256.0,562,57260,56966,256.0,12,3285,289,256.0,2,700,696,256.0
+2024-07-25 09:13:48,148,19,39,0,256.0,583,58365,58061,256.0,12,3400,299,256.0,2,711,707,256.0

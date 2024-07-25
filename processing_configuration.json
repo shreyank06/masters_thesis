@@ -35,13 +35,13 @@
         "subscriber_count_Pending",
         "subscriber_count_Unregistered"
     ],
-    "transform_data": "true",
+    "transform_data": false,
     "start_time": "2024-01-29T11:10:00",
     "end_time": "2024-01-29T11:10:30",
     "step": "1s",
     "component": ["smf","amf", "upf1", "ausf", "udm"],
-    "regroup_columns":false,
-    "retrain_model":true,
+    "regroup_columns":true,
+    "retrain_model":false,
     "get_csv": true,
     "convert_json_to_features":false,
 

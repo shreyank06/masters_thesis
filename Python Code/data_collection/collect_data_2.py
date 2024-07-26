@@ -63,7 +63,7 @@ class CsvCollector:
                 csv_filename = f"{self.component}_{self.registration_number}_{self.ops_per_second}_set_{counter}.csv"
 
             
-            self.df.to_csv(os.path.join('data', csv_filename), index=True)
+            self.df.to_csv(os.path.join('processed_data', csv_filename), index=True)
             print(f"Results CSV file saved as: {csv_filename} in 'processed_data' folder.")
 
 

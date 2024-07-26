@@ -46,7 +46,7 @@ class CsvCollector:
                 counter += 1
                 csv_filename = f"{self.component}_{self.registration_number}_{self.ops_per_second}_set_{counter}.csv"
 
-            # Save original CSV file in 'data' folder
+            
             self.df.to_csv(os.path.join('raw_data', csv_filename), index=True)
             print(f"Results CSV file saved as: {csv_filename} in 'raw_data' folder.")
             
@@ -58,11 +58,11 @@ class CsvCollector:
             csv_filename = f"{self.component}_{self.registration_number}_{self.ops_per_second}_set.csv"
             
             counter = 0
-            while os.path.exists(os.path.join('data', csv_filename)):
+            while os.path.exists(os.path.join('processed_data', csv_filename)):
                 counter += 1
                 csv_filename = f"{self.component}_{self.registration_number}_{self.ops_per_second}_set_{counter}.csv"
 
-            # Save original CSV file in 'data' folder
+            
             self.df.to_csv(os.path.join('data', csv_filename), index=True)
             print(f"Results CSV file saved as: {csv_filename} in 'processed_data' folder.")
 

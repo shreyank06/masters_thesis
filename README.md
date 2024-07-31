@@ -1,7 +1,7 @@
 
 
 Usage for data collection
-```
+
 1. Start ph_init
 2. go to http://192.168.254.130:9090 and see prometheus has started or not, if yes, proceed with next steps
 3. Clone this repo

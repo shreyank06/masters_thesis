@@ -5,7 +5,7 @@
 1. Start ph_init
 2. go to http://192.168.254.130:9090 and see prometheus has started or not, if yes, proceed with next steps
 3. Clone this repo
-4. Check time on the terminal where the ph_init is started with this command
+4. Check time on the terminal of the system where the ph_init is started with this command
 ```
 date
 ```

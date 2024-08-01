@@ -1,0 +1,15 @@
+,,globalP,globalP,globalP,globalP,packetP,packetP,packetP,packetP,sessionP,sessionP,sessionP,sessionP,transactionP,transactionP,transactionP,transactionP
+,subscriber_count_Connected,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_globalP_udm,phoenix_memory_pool_create_count_cm_globalP_udm,phoenix_memory_pool_destroy_count_cm_globalP_udm,total_allocated_memory_globalP_udm,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_packetP_udm,phoenix_memory_pool_create_count_cm_packetP_udm,phoenix_memory_pool_destroy_count_cm_packetP_udm,total_allocated_memory_packetP_udm,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_sessionP_udm,phoenix_memory_pool_create_count_cm_sessionP_udm,phoenix_memory_pool_destroy_count_cm_sessionP_udm,total_allocated_memory_sessionP_udm,phoenix_memory_cm_max_used_chunks_per_pool_count_cm_transactionP_udm,phoenix_memory_pool_create_count_cm_transactionP_udm,phoenix_memory_pool_destroy_count_cm_transactionP_udm,total_allocated_memory_transactionP_udm
+timestamp,,,,,,,,,,,,,,,,,
+2024-08-01 08:45:50,0,6,34,0,16.0,10,35,28,16.0,1,1,1,16.0,2,12,8,16.0
+2024-08-01 08:45:51,0,6,34,0,16.0,10,35,28,16.0,1,1,1,16.0,2,12,8,16.0
+2024-08-01 08:45:52,0,6,34,0,16.0,10,35,28,16.0,1,1,1,16.0,2,12,8,16.0
+2024-08-01 08:45:53,0,6,34,0,16.0,10,35,28,16.0,1,1,1,16.0,2,12,8,16.0
+2024-08-01 08:45:54,0,6,34,0,16.0,10,35,28,16.0,1,1,1,16.0,2,12,8,16.0
+2024-08-01 08:45:55,0,6,34,0,16.0,10,35,28,16.0,1,1,1,16.0,2,12,8,16.0
+2024-08-01 08:45:56,0,6,34,0,16.0,10,35,28,16.0,1,1,1,16.0,2,12,8,16.0
+2024-08-01 08:45:57,0,6,34,0,16.0,10,35,28,16.0,1,1,1,16.0,2,12,8,16.0
+2024-08-01 08:45:58,0,6,34,0,16.0,10,35,28,16.0,1,1,1,16.0,2,12,8,16.0
+2024-08-01 08:45:59,0,6,34,0,16.0,10,35,28,16.0,1,1,1,16.0,2,12,8,16.0
+2024-08-01 08:46:00,0,6,34,0,16.0,10,35,28,16.0,1,1,1,16.0,2,12,8,16.0
+2024-08-01 08:46:01,19,6,34,0,16.0,10,35,28,16.0,1,1,1,16.0,2,12,8,16.0
